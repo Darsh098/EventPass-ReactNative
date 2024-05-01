@@ -13,6 +13,7 @@ const AuthIndex = () => (
             }}
         >
             <AuthStack.Screen name="Login" component={LoginScreen} />
+            <AuthStack.Screen name="SignIn" component={LoginScreen} />
         </AuthStack.Navigator>
     </View>
 );

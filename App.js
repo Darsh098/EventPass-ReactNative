@@ -4,22 +4,17 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import Constants from "expo-constants";
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/clerk-expo";
+import MainRoute from "./src/MainRoute";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const app_key = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY
   return (
     <ClerkProvider
-      publishableKey={Constants.expoConfig.extra.clerkPublishableKey}
-    >
+      publishableKey={app_key}>
       <NavigationContainer>
-        {/* <MainRoute /> */}
-        <SignedIn>
-          <Text>You are Signed in</Text>
-        </SignedIn>
-        <SignedOut>
-          <Text>You are Signed out</Text>
-        </SignedOut>
+        <MainRoute />
       </NavigationContainer>
     </ClerkProvider>
   );

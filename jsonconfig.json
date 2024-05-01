@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": false,
+    "baseUrl": "./",
+    "paths": {
+      "@screens": ["src/screens/index"],
+      "@screens/*": ["src/screens/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}

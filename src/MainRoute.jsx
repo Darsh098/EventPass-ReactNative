@@ -1,39 +1,59 @@
 import * as React from "react";
-import { View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TabScreen from "./Screens/Tabs";
-import AuthIndex from "./Screens/auth";
-import { SignedIn, SignedOut } from "@clerk/clerk-expo";
+import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
+import * as SplashScreen from "expo-splash-screen";
+import SignUpScreen from "./Screens/SignUpScreen";
+import SignInScreen from "./Screens/SignInScreen";
+import VerifyCodeScreen from "./Screens/VerifyCodeScreen";
+import { NavigationContainer } from "@react-navigation/native";
 
-const AppStack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator();
 
 const MainRoute = () => {
   return (
+    <NavigationContainer>
+      <RootNavigator />
+    </NavigationContainer>
+  );
+};
+
+const RootNavigator = () => {
+  const { isSignedIn, isLoaded } = useUser();
+
+  React.useEffect(() => {
+    if (isLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [isLoaded]);
+
+  return (
     <>
-      <SignedIn>
-        <View style={{ flex: 5 }}>
-          <AppStack.Navigator
-            initialRouteName="TAB"
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <AppStack.Screen name="TAB" component={TabScreen} />
-          </AppStack.Navigator>
-        </View>
-      </SignedIn>
-      <SignedOut>
-        <View style={{ flex: 5 }}>
-          <AppStack.Navigator
-            initialRouteName="AUTH"
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <AppStack.Screen name="AUTH" component={AuthIndex} />
-          </AppStack.Navigator>
-        </View>
-      </SignedOut>
+      <ClerkLoaded>
+        <Stack.Navigator>
+          {isSignedIn ? (
+            <Stack.Screen name="Tab" component={TabScreen} />
+          ) : (
+            <>
+              <Stack.Screen
+                name="SignUp"
+                component={SignUpScreen}
+                options={{ title: "Sign Up" }}
+              />
+              <Stack.Screen
+                name="SignIn"
+                component={SignInScreen}
+                options={{ title: "Sign In" }}
+              />
+              <Stack.Screen
+                name="VerifyCode"
+                component={VerifyCodeScreen}
+                options={{ title: "Sign Up" }}
+              />
+            </>
+          )}
+        </Stack.Navigator>
+      </ClerkLoaded>
     </>
   );
 };

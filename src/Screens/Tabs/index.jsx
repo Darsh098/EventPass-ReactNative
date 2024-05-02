@@ -1,10 +1,10 @@
 import * as React from "react";
 import { StyleSheet } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import ScanScreen from "../Scan/ScanScreen";
-import { COLORS, SPACING } from "../../theme/theme";
+import { COLORS, SPACING } from "../../Theme/theme";
 import HomeIndex from "../Home";
 import ScanIndex from "../Scan";
+import MyProfileScreen from "../MyProfileScreen";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -13,15 +13,20 @@ const TabScreen = () => {
     <Tab.Navigator
       initialRouteName="HOME"
       screenOptions={{
-        tabBarActiveTintColor: COLORS.Orange,
-        // tabBarLabelStyle: { color: "white" },
+        // tabBarActiveTintColor: COLORS.Orange,
+        tabBarLabelStyle: { color: "white" },
         tabBarStyle: {
           backgroundColor: COLORS.Black,
         },
       }}
     >
-      <Tab.Screen name="HOME" component={HomeIndex} />
-      <Tab.Screen name="SCAN" component={ScanIndex} />
+      <Tab.Screen
+        name="MyProfile"
+        component={MyProfileScreen}
+        options={{ title: "MyProfile" }}
+      />
+      <Tab.Screen name="Home" component={HomeIndex} />
+      <Tab.Screen name="Scan" component={ScanIndex} />
     </Tab.Navigator>
   );
 };

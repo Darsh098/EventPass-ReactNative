@@ -63,7 +63,7 @@ export default ScanScreen = () => {
                     {data.getEventVisitorById.events.organizer.firstName}
                   </Text>
                   <Text style={styles.scanData}>
-                    Event Name: {data.getEventVisitorById.visitor.firstName}
+                    Visitor: {data.getEventVisitorById.visitor.firstName}
                   </Text>
                   {/* Render other details here */}
                 </>

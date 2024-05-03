@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, ScrollView } from "react-native";
 import { useQuery } from "@apollo/client";
 import QRCode from "react-native-qrcode-svg";
 import { GET_EVENT_VISITOR_BY_USER_CLERK_ID } from "../../GraphQL/Queries";
@@ -35,15 +35,15 @@ const HomeScreen = ({ params }) => {
   if (error) return <Text>Error: {error.message}</Text>;
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {qrCodes.length > 0 ? qrCodes : <Text>No Invitations</Text>}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
   },

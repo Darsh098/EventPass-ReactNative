@@ -35,7 +35,7 @@ const HomeScreen = ({ params }) => {
   if (error) return <Text>Error: {error.message}</Text>;
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       {qrCodes.length > 0 ? qrCodes : <Text>No Invitations</Text>}
     </ScrollView>
   );

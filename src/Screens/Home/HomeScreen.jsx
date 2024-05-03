@@ -7,7 +7,7 @@ import { useUser } from "@clerk/clerk-expo";
 
 const HomeScreen = ({ params }) => {
   const { user } = useUser();
-  const [qrCodes, setQrCodes] = useState([]);
+  const [eventInvitations, setEventInvitations] = useState([]);
 
   const { loading, error, data } = useQuery(
     GET_EVENT_VISITOR_BY_USER_CLERK_ID,
@@ -19,15 +19,31 @@ const HomeScreen = ({ params }) => {
   useEffect(() => {
     if (data && data.getEventVisitorByUserClerkId) {
       const eventVisitors = data.getEventVisitorByUserClerkId;
-      const qrCodes = eventVisitors.map((visitor) => {
+      const invitations = eventVisitors.map((visitor) => {
         return (
-          <View key={visitor.id} style={styles.qrCodeContainer}>
-            <Text>{visitor.events.name}</Text>
-            <QRCode value={visitor.id.toString()} />
+          <View key={visitor.id} style={styles.invitationContainer}>
+            <View style={styles.detailsContainer}>
+              <Text style={styles.eventName}>{visitor.events.name}</Text>
+              <View style={styles.eventDetailsContainer}>
+                <Text style={styles.eventDetail}>
+                  Date: {visitor.events.eventDate}
+                </Text>
+                <Text style={styles.eventDetail}>
+                  Organizer: {visitor.events.organizer.firstName}{" "}
+                  {visitor.events.organizer.lastName}
+                </Text>
+                <Text style={styles.eventDetail}>
+                  Venue: {visitor.events.venue}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.qrCodeContainer}>
+              <QRCode value={visitor.id.toString()} />
+            </View>
           </View>
         );
       });
-      setQrCodes(qrCodes);
+      setEventInvitations(invitations);
     }
   }, [data]);
 
@@ -36,7 +52,12 @@ const HomeScreen = ({ params }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {qrCodes.length > 0 ? qrCodes : <Text>No Invitations</Text>}
+      <Text style={styles.title}>Event Invitations</Text>
+      {eventInvitations.length > 0 ? (
+        eventInvitations
+      ) : (
+        <Text>No Invitations</Text>
+      )}
     </ScrollView>
   );
 };
@@ -44,11 +65,40 @@ const HomeScreen = ({ params }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
+  invitationContainer: {
+    marginBottom: 30,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 10,
+  },
+  detailsContainer: {
+    flexDirection: "column",
+  },
+  eventName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+    marginRight: 20,
+  },
+  eventDetailsContainer: {
+    flex: 1,
+  },
+  eventDetail: {
+    fontSize: 16,
+    marginBottom: 5,
   },
   qrCodeContainer: {
-    marginBottom: 20,
+    alignItems: "flex-end",
   },
 });
 

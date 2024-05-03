@@ -1,5 +1,7 @@
 import * as React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useQuery } from "@apollo/client";
+import { GET_EVENTS_BY_ORGANIZER_CLERK_ID } from "../GraphQL/Queries";
 import { SignedIn, SignedOut, useAuth, useUser } from "@clerk/clerk-expo";
 import { log } from "../../logger";
 
@@ -21,6 +23,9 @@ export default function SafeMyProfileScreen(props) {
 function MyProfileScreen({ navigation }) {
   const { getToken, signOut } = useAuth();
   const { user } = useUser();
+  const { loading, error, data } = useQuery(GET_EVENTS_BY_ORGANIZER_CLERK_ID, {
+    variables: { clerkId: user.id },
+  });
 
   const [sessionToken, setSessionToken] = React.useState("");
 
@@ -44,11 +49,34 @@ function MyProfileScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Hello {user?.firstName}</Text>
-      <TouchableOpacity onPress={onSignOutPress} style={styles.link}>
-        <Text style={styles.linkText}>Sign out</Text>
-      </TouchableOpacity>
-      <Text style={styles.token}>{sessionToken}</Text>
+      <View style={styles.header}>
+        <Text style={styles.greeting}>Hello {user?.firstName}</Text>
+        <TouchableOpacity onPress={onSignOutPress} style={styles.signOutButton}>
+          <Text style={styles.signOutButtonText}>Sign out</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.separator} />
+      <Text style={styles.heading}>Events Created By You</Text>
+
+      {loading ? (
+        <Text>Loading...</Text>
+      ) : error ? (
+        <Text>Error: {error.message}</Text>
+      ) : (
+        <View style={styles.eventList}>
+          {data.getEventsByOrganizerClerkId.length > 0 ? (
+            data.getEventsByOrganizerClerkId.map((event) => (
+              <View key={event.id} style={styles.eventContainer}>
+                <Text style={styles.eventName}>{event.name}</Text>
+                <Text>Date: {event.eventDate}</Text>
+                <Text>Venue: {event.venue}</Text>
+              </View>
+            ))
+          ) : (
+            <Text>No events created</Text>
+          )}
+        </View>
+      )}
     </View>
   );
 }
@@ -56,25 +84,47 @@ function MyProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     padding: 20,
   },
-  title: {
-    fontSize: 20,
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  greeting: {
+    fontSize: 24,
     fontWeight: "bold",
   },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
+  signOutButton: {
+    backgroundColor: "#2e78b7",
+    padding: 10,
+    borderRadius: 5,
   },
-  linkText: {
-    fontSize: 14,
-    color: "#2e78b7",
+  signOutButtonText: {
+    color: "white",
   },
-  token: {
-    marginTop: 15,
-    paddingVertical: 15,
-    fontSize: 15,
+  separator: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    marginBottom: 20,
+  },
+  heading: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  eventList: {
+    flex: 1,
+  },
+  eventContainer: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+  eventName: {
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

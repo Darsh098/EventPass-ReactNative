@@ -140,6 +140,32 @@ export const GET_EVENT_BY_ID = gql`
   }
 `;
 
+export const GET_EVENTS_BY_ORGANIZER_CLERK_ID = gql`
+  query GetEventsByOrganizerClerkId($clerkId: String!) {
+    getEventsByOrganizerClerkId(clerkId: $clerkId) {
+      id
+      name
+      description
+      venue
+      eventDate
+      startTime
+      endTime
+      timeDuration
+      entriesCount
+      organizer {
+        id
+        firstName
+        lastName
+        profilePhoto
+        email
+        mobileNumber
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
 export const GET_ALL_EVENT_VISITORS = gql`
   query {
     getAllEventVisitors {
@@ -245,6 +271,10 @@ export const GET_EVENT_VISITOR_BY_USER_CLERK_ID = gql`
         endTime
         timeDuration
         entriesCount
+        organizer {
+          id
+          firstName
+        }
       }
       visitor {
         id

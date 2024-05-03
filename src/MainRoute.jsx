@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TabScreen from "./Screens/Tabs";
 import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
@@ -21,7 +21,7 @@ const MainRoute = () => {
 const RootNavigator = () => {
   const { isSignedIn, isLoaded } = useUser();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isLoaded) {
       SplashScreen.hideAsync();
     }

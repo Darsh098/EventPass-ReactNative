@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,11 +7,15 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useMutation } from "@apollo/client";
 import { CREATE_EVENT, CREATE_EVENT_VISITOR } from "../../GraphQL/Mutations";
 import { useUser } from "@clerk/clerk-expo";
+import UserSearchModal from "../../Components/UserSearchModal";
+import { AntDesign } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 
 const CreateEventScreen = () => {
   const { user } = useUser();
@@ -30,6 +34,12 @@ const CreateEventScreen = () => {
   const [visitors, setVisitors] = useState([]);
   const [createEvent] = useMutation(CREATE_EVENT);
   const [createEventVisitor] = useMutation(CREATE_EVENT_VISITOR);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  // To Check Which Are The Visitors Selected
+  // useEffect(() => {
+  //   console.log(visitors);
+  // }, [visitors]);
 
   const handleCreateEvent = async () => {
     try {
@@ -79,6 +89,7 @@ const CreateEventScreen = () => {
     setShowStartTime(false);
     setShowEndTime(false);
     setEmail("");
+    setIsModalVisible(false);
     setVisitors([]);
   };
 
@@ -93,17 +104,6 @@ const CreateEventScreen = () => {
     return durationInMinutes;
   };
 
-  const addEmail = () => {
-    if (email) {
-      setVisitors([...visitors, email]);
-      setEmail("");
-    }
-  };
-
-  const removeEmail = (index) => {
-    setVisitors(visitors.filter((_, i) => i !== index));
-  };
-
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDate(false);
@@ -113,6 +113,8 @@ const CreateEventScreen = () => {
   const onChangeStartTime = (event, selectedTime) => {
     const currentTime = selectedTime || startTime;
     setShowStartTime(false);
+    // Show The End Time Immediately show it will be shown as effect of choosing time slot
+    setShowEndTime(true);
     setStartTime(currentTime);
   };
 
@@ -125,38 +127,70 @@ const CreateEventScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Create New Event</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Venue"
-        value={venue}
-        onChangeText={setVenue}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Event Date"
-        value={date.toLocaleDateString()}
-        onFocus={() => {
-          setShowDate(true);
-        }}
-      />
-      {/* <View style={styles.datePickerContainer}>
-        <TouchableOpacity onPress={() => setShowDate(true)}>
-          <Text
-            style={[styles.input]}
-          >{`Event Date: ${date.toLocaleDateString()}`}</Text>
-        </TouchableOpacity> */}
+      {/* Input fields */}
+      <View style={styles.inputContainer}>
+        {/* Name */}
+        <TextInput
+          style={styles.input}
+          placeholder="Name"
+          value={name}
+          onChangeText={setName}
+        />
+        {/* Description */}
+        <TextInput
+          style={styles.input}
+          placeholder="Description"
+          value={description}
+          onChangeText={setDescription}
+        />
+        {/* Venue */}
+        <TextInput
+          style={styles.input}
+          placeholder="Venue"
+          value={venue}
+          onChangeText={setVenue}
+        />
+        {/* Number of Entries */}
+        <TextInput
+          style={styles.input}
+          placeholder="Number Of Entries"
+          keyboardType="numeric"
+          onChangeText={setEntriesCount}
+          value={entriesCount}
+          maxLength={3}
+        />
+        {/* Photo URL */}
+        <TextInput
+          style={styles.input}
+          placeholder="Photo URL"
+          value={photo}
+          onChangeText={setPhoto}
+        />
+      </View>
+
+      {/* Date, Time, Add Visitor Icons */}
+      <View style={styles.iconContainer}>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => setShowDate(true)}
+        >
+          <AntDesign name="calendar" size={24} color="#5E63E9" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => setShowStartTime(true)}
+        >
+          <Entypo name="time-slot" size={24} color="#5E63E9" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => setIsModalVisible(true)}
+        >
+          <AntDesign name="addusergroup" size={24} color="#5E63E9" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Date Picker */}
       {showDate && (
         <DateTimePicker
           value={date}
@@ -164,22 +198,11 @@ const CreateEventScreen = () => {
           is24Hour={true}
           display="default"
           onChange={onChangeDate}
-          style={[styles.datePicker, { width: "100%" }]}
+          style={styles.datePicker}
         />
       )}
-      {/* </View>
-      <View style={styles.timePickerContainer}>
-        <TouchableOpacity onPress={() => setShowStartTime(true)}>
-          <Text
-            style={styles.input}
-          >{`Start Time: ${startTime.toLocaleTimeString()}`}</Text>
-        </TouchableOpacity> */}
-      <TextInput
-        style={styles.input}
-        placeholder="Start Time"
-        value={startTime.toLocaleTimeString()}
-        onFocus={() => setShowStartTime(true)}
-      />
+
+      {/* Start Time Picker */}
       {showStartTime && (
         <DateTimePicker
           value={startTime}
@@ -190,19 +213,8 @@ const CreateEventScreen = () => {
           style={styles.timePicker}
         />
       )}
-      {/* </View>
-      <View style={styles.timePickerContainer}>
-        <TouchableOpacity onPress={() => setShowEndTime(true)}>
-          <Text
-            style={styles.input}
-          >{`End Time: ${endTime.toLocaleTimeString()}`}</Text>
-        </TouchableOpacity> */}
-      <TextInput
-        style={styles.input}
-        placeholder="End Time"
-        value={endTime.toLocaleTimeString()}
-        onFocus={() => setShowEndTime(true)}
-      />
+
+      {/* End Time Picker */}
       {showEndTime && (
         <DateTimePicker
           value={endTime}
@@ -213,46 +225,26 @@ const CreateEventScreen = () => {
           style={styles.timePicker}
         />
       )}
-      {/* </View> */}
-      <TextInput
-        style={styles.input}
-        placeholder="Number Of Entries"
-        keyboardType="numeric"
-        onChangeText={setEntriesCount}
-        value={entriesCount}
-        maxLength={3}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Photo URL"
-        value={photo}
-        onChangeText={setPhoto}
-      />
-      {/* <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={visitors.join(", ")} // Join the array into a string
-        onChangeText={(text) => setVisitors(text.split(", "))} // Split the string into an array
-      /> */}
-      {/* For Allowing Multiple Emails */}
-      <TouchableOpacity style={styles.emailContainer}>
-        <TextInput
-          style={[styles.input, { flex: 1 }]}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
+
+      {/* Create and Cancel Buttons */}
+      <View style={styles.buttonContainer}>
+        <Button title="Create" onPress={handleCreateEvent} />
+        <Button
+          title="Cancel"
+          color="#FF6961"
+          onPress={resetFields}
+          style={styles.cancelButton}
         />
-        <Button title="Add" onPress={addEmail} />
-      </TouchableOpacity>
-      {visitors.map((email, index) => (
-        <View key={index} style={styles.emailContainer}>
-          <Text style={styles.email}>{email}</Text>
-          <TouchableOpacity onPress={() => removeEmail(index)}>
-            <Text style={styles.remove}>Remove</Text>
-          </TouchableOpacity>
-        </View>
-      ))}
-      <Button title="Create Event" onPress={handleCreateEvent} />
+      </View>
+
+      {/* User Search Modal */}
+      <UserSearchModal
+        isVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        selectedUsers={visitors}
+        setSelectedUsers={setVisitors}
+        currentUserEmail={user.primaryEmailAddress.emailAddress}
+      />
     </ScrollView>
   );
 };
@@ -260,33 +252,34 @@ const CreateEventScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    alignItems: "center",
-    justifyContent: "center",
     padding: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+    color: "#5E63E9",
+  },
+  inputContainer: {
+    marginBottom: 20,
   },
   input: {
     width: "100%",
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: "#A9A9A9",
+    borderRadius: 8,
     padding: 10,
     marginBottom: 10,
   },
-  datePickerContainer: {
+  iconContainer: {
     flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-    width: "100%",
+    justifyContent: "space-around",
+    marginBottom: 20,
   },
-  timePickerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-    width: "100%",
+  iconButton: {
+    padding: 10,
+    backgroundColor: "#E8E8E8",
+    borderRadius: 8,
   },
   datePicker: {
     width: "100%",
@@ -294,18 +287,13 @@ const styles = StyleSheet.create({
   timePicker: {
     width: "100%",
   },
-  emailContainer: {
+  buttonContainer: {
     flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
+    justifyContent: "space-between",
+    marginTop: 20,
   },
-  email: {
-    flex: 1,
-    padding: 10,
-  },
-  remove: {
-    color: "red",
-    padding: 10,
+  cancelButton: {
+    marginLeft: 10,
   },
 });
 

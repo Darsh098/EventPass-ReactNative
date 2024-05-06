@@ -38,7 +38,12 @@ const HomeScreen = ({ params }) => {
               </View>
             </View>
             <View style={styles.qrCodeContainer}>
-              <QRCode value={visitor.id.toString()} />
+              <QRCode
+                // color="#5E63E9"
+                enableLinearGradient={true}
+                linearGradient={["#AEB2E5", "#5E63E9"]}
+                value={visitor.id.toString()}
+              />
             </View>
           </View>
         );
@@ -52,7 +57,7 @@ const HomeScreen = ({ params }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Event Invitations</Text>
+      <Text style={styles.title}>Invitations</Text>
       {eventInvitations.length > 0 ? (
         eventInvitations
       ) : (
@@ -66,11 +71,13 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
+    backgroundColor: "#f0f0f0",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+    color: "#5E63E9",
   },
   invitationContainer: {
     marginBottom: 30,
@@ -78,8 +85,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 5,
+    borderRadius: 8,
     padding: 10,
+    backgroundColor: "#fff",
   },
   detailsContainer: {
     flexDirection: "column",
@@ -89,6 +97,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
     marginRight: 20,
+    color: "#333",
   },
   eventDetailsContainer: {
     flex: 1,
@@ -96,6 +105,7 @@ const styles = StyleSheet.create({
   eventDetail: {
     fontSize: 16,
     marginBottom: 5,
+    color: "#555",
   },
   qrCodeContainer: {
     alignItems: "flex-end",

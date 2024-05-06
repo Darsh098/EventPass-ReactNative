@@ -1,9 +1,15 @@
 import * as React from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from "react-native";
 import { useSignUp } from "@clerk/clerk-expo";
 import { log } from "../../logger";
-import { styles } from "../Components/Styles";
 import { OAuthButtons } from "../Components/OAuth";
+import { styles } from "../Theme/Styles";
 
 export default function SignUpScreen({ navigation }) {
   const { isLoaded, signUp } = useSignUp();
@@ -47,8 +53,8 @@ export default function SignUpScreen({ navigation }) {
         <TextInput
           value={firstName}
           style={styles.textInput}
-          placeholder="First name..."
-          placeholderTextColor="#000"
+          placeholder="First name"
+          placeholderTextColor="#A9A9A9"
           onChangeText={(firstName) => setFirstName(firstName)}
         />
       </View>
@@ -57,8 +63,8 @@ export default function SignUpScreen({ navigation }) {
         <TextInput
           value={lastName}
           style={styles.textInput}
-          placeholder="Last name..."
-          placeholderTextColor="#000"
+          placeholder="Last name"
+          placeholderTextColor="#A9A9A9"
           onChangeText={(lastName) => setLastName(lastName)}
         />
       </View>
@@ -68,8 +74,8 @@ export default function SignUpScreen({ navigation }) {
           autoCapitalize="none"
           value={emailAddress}
           style={styles.textInput}
-          placeholder="Email..."
-          placeholderTextColor="#000"
+          placeholder="Email"
+          placeholderTextColor="#A9A9A9"
           onChangeText={(email) => setEmailAddress(email)}
         />
       </View>
@@ -78,8 +84,8 @@ export default function SignUpScreen({ navigation }) {
         <TextInput
           value={password}
           style={styles.textInput}
-          placeholder="Password..."
-          placeholderTextColor="#000"
+          placeholder="Password"
+          placeholderTextColor="#A9A9A9"
           secureTextEntry={true}
           onChangeText={(password) => setPassword(password)}
         />

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { COLORS, SPACING } from "../../Theme/theme";
 import HomeIndex from "../Home";
 import ScanIndex from "../Scan";
 import MyProfileScreen from "../MyProfileScreen";
@@ -9,6 +7,12 @@ import { useMutation } from "@apollo/client";
 import { CREATE_USER } from "../../GraphQL/Mutations";
 import { useUser } from "@clerk/clerk-expo";
 import CreateEventScreen from "../CreateEvent/CreateEventScreen";
+import {
+  Feather,
+  MaterialCommunityIcons,
+  MaterialIcons,
+  AntDesign,
+} from "@expo/vector-icons";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -62,35 +66,73 @@ const TabScreen = () => {
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        // tabBarActiveTintColor: COLORS.Orange,
         tabBarLabelStyle: { color: "white" },
         tabBarStyle: {
-          backgroundColor: COLORS.Black,
+          // backgroundColor: COLORS.Black,
+          backgroundColor: "#0D1117",
         },
       }}
     >
-      <Tab.Screen name="Home" component={HomeIndex} />
+      <Tab.Screen
+        name="Home"
+        component={HomeIndex}
+        options={{
+          tabBarShowLabel: false,
+          tabBarIcon: ({ focused }) => (
+            <AntDesign
+              name="home"
+              size={24}
+              color={focused ? "#5E63E9" : "#AEB2E5"}
+            />
+          ),
+        }}
+      />
       <Tab.Screen
         name="CreateEvent"
         component={CreateEventScreen}
-        options={{ title: "Create" }}
+        options={{
+          // title: "Create"
+          tabBarShowLabel: false,
+          tabBarIcon: ({ focused }) => (
+            <MaterialIcons
+              name="post-add"
+              size={24}
+              color={focused ? "#5E63E9" : "#AEB2E5"}
+            />
+          ),
+        }}
       />
-      <Tab.Screen name="Scan" component={ScanIndex} />
+      <Tab.Screen
+        name="Scan"
+        component={ScanIndex}
+        options={{
+          tabBarShowLabel: false,
+          tabBarIcon: ({ focused }) => (
+            <MaterialCommunityIcons
+              name="line-scan"
+              size={24}
+              color={focused ? "#5E63E9" : "#AEB2E5"}
+            />
+          ),
+        }}
+      />
       <Tab.Screen
         name="MyProfile"
         component={MyProfileScreen}
-        options={{ title: "Profile" }}
+        options={{
+          // title: "Profile"
+          tabBarShowLabel: false,
+          tabBarIcon: ({ focused }) => (
+            <Feather
+              name="user"
+              size={24}
+              color={focused ? "#5E63E9" : "#AEB2E5"}
+            />
+          ),
+        }}
       />
     </Tab.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  activeTabBackground: {
-    backgroundColor: COLORS.Black,
-    padding: SPACING.space_18,
-    borderRadius: SPACING.space_18 * 10,
-  },
-});
 
 export default TabScreen;

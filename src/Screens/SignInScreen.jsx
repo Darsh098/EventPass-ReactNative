@@ -1,9 +1,15 @@
 import React from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from "react-native";
 import { useSignIn } from "@clerk/clerk-expo";
 import { log } from "../../logger";
 import { OAuthButtons } from "../Components/OAuth";
-import { styles } from "../Components/Styles";
+import { styles } from "../Theme/Styles";
 
 export default function SignInScreen({ navigation }) {
   const { signIn, setSession, isLoaded } = useSignIn();
@@ -42,8 +48,8 @@ export default function SignInScreen({ navigation }) {
           autoCapitalize="none"
           value={emailAddress}
           style={styles.textInput}
-          placeholder="Email..."
-          placeholderTextColor="#000"
+          placeholder="Email"
+          placeholderTextColor="#A9A9A9"
           onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
         />
       </View>
@@ -52,8 +58,8 @@ export default function SignInScreen({ navigation }) {
         <TextInput
           value={password}
           style={styles.textInput}
-          placeholder="Password..."
-          placeholderTextColor="#000"
+          placeholder="Password"
+          placeholderTextColor="#A9A9A9"
           secureTextEntry={true}
           onChangeText={(password) => setPassword(password)}
         />
@@ -64,7 +70,7 @@ export default function SignInScreen({ navigation }) {
       </TouchableOpacity>
 
       <View style={styles.footer}>
-        <Text>Have an account?</Text>
+        <Text>Don't have an account?</Text>
 
         <TouchableOpacity
           style={styles.secondaryButton}

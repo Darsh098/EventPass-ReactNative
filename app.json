@@ -17,6 +17,11 @@
       "supportsTablet": true
     },
     "android": {
+      "config": {
+        "cleartext": {
+          "config": ["https://img.clerk.com"]
+        }
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

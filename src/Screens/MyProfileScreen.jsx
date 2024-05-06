@@ -1,9 +1,10 @@
 import * as React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useQuery } from "@apollo/client";
 import { GET_EVENTS_BY_ORGANIZER_CLERK_ID } from "../GraphQL/Queries";
 import { SignedIn, SignedOut, useAuth, useUser } from "@clerk/clerk-expo";
 import { log } from "../../logger";
+import { AntDesign, Entypo } from "@expo/vector-icons";
 
 export default function SafeMyProfileScreen(props) {
   return (
@@ -13,7 +14,7 @@ export default function SafeMyProfileScreen(props) {
       </SignedIn>
       <SignedOut>
         <View style={styles.container}>
-          <Text>Unauthorized</Text>
+          <Text style={styles.unauthorizedText}>Unauthorized</Text>
         </View>
       </SignedOut>
     </>
@@ -50,9 +51,25 @@ function MyProfileScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.greeting}>Hello {user?.firstName}</Text>
+        <View style={styles.profileContainer}>
+          {user?.imageUrl && (
+            <Image
+              source={{ uri: user.imageUrl }}
+              style={styles.profileImage}
+            />
+          )}
+          <View>
+            <Text style={styles.greeting}>
+              {user?.firstName} {user?.lastName}
+            </Text>
+            <Text style={styles.email}>
+              {user?.primaryEmailAddress?.emailAddress}
+            </Text>
+          </View>
+        </View>
         <TouchableOpacity onPress={onSignOutPress} style={styles.signOutButton}>
-          <Text style={styles.signOutButtonText}>Sign out</Text>
+          {/* <Text style={styles.signOutButtonText}>Sign out</Text> */}
+          <Entypo name="log-out" size={24} color="#5E63E9" />
         </TouchableOpacity>
       </View>
       <View style={styles.separator} />
@@ -61,15 +78,20 @@ function MyProfileScreen({ navigation }) {
       {loading ? (
         <Text>Loading...</Text>
       ) : error ? (
-        <Text>Error: {error.message}</Text>
+        <Text style={styles.errorText}>Error: {error.message}</Text>
       ) : (
         <View style={styles.eventList}>
           {data.getEventsByOrganizerClerkId.length > 0 ? (
             data.getEventsByOrganizerClerkId.map((event) => (
               <View key={event.id} style={styles.eventContainer}>
-                <Text style={styles.eventName}>{event.name}</Text>
-                <Text>Date: {event.eventDate}</Text>
-                <Text>Venue: {event.venue}</Text>
+                <View style={styles.eventDetails}>
+                  <Text style={styles.eventName}>{event.name}</Text>
+                  <Text>Date: {event.eventDate}</Text>
+                  <Text>Venue: {event.venue}</Text>
+                </View>
+                <TouchableOpacity style={styles.rightIconContainer}>
+                  <AntDesign name="right" size={24} color="#5E63E9" />
+                </TouchableOpacity>
               </View>
             ))
           ) : (
@@ -85,20 +107,36 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: "#f0f0f0",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 20,
+    alignItems: "center",
+  },
+  profileContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
   },
   greeting: {
     fontSize: 24,
     fontWeight: "bold",
+    color: "#333",
+  },
+  email: {
+    color: "#666",
   },
   signOutButton: {
-    backgroundColor: "#2e78b7",
+    backgroundColor: "#E8E8E8",
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 8,
   },
   signOutButtonText: {
     color: "white",
@@ -112,19 +150,31 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
+    color: "#5E63E9",
   },
   eventList: {
     flex: 1,
   },
   eventContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 5,
+    borderRadius: 8,
     padding: 10,
     marginBottom: 10,
+    backgroundColor: "#fff",
+  },
+  eventDetails: {
+    flex: 1,
   },
   eventName: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "#333",
+    marginBottom: 5,
+  },
+  rightIconContainer: {
+    justifyContent: "center",
   },
 });

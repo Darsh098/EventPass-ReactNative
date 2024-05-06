@@ -1,8 +1,14 @@
 import * as React from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from "react-native";
 import { useClerk, useSignUp } from "@clerk/clerk-expo";
-import { styles } from "../Components/Styles";
 import { log } from "../../logger";
+import { styles } from "../Theme/Styles";
 
 export default function VerifyCodeScreen({ navigation }) {
   const { isLoaded, signUp, setSession } = useSignUp();
@@ -27,19 +33,38 @@ export default function VerifyCodeScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputView}>
+    <View style={newStyle.container}>
+      <View style={newStyle.inputView}>
         <TextInput
           value={code}
           style={styles.textInput}
-          placeholder="Code..."
-          placeholderTextColor="#000"
+          placeholder="OTP"
+          placeholderTextColor="#A9A9A9"
           onChangeText={(code) => setCode(code)}
         />
       </View>
-      <TouchableOpacity style={styles.primaryButton} onPress={onPress}>
+      <TouchableOpacity style={newStyle.primaryButton} onPress={onPress}>
         <Text style={styles.primaryButtonText}>Verify Email</Text>
       </TouchableOpacity>
     </View>
   );
 }
+
+const newStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 15,
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+  },
+  inputView: {
+    width: "80%",
+    marginBottom: 20,
+  },
+  primaryButton: {
+    backgroundColor: "#5E63E9",
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+  },
+});

@@ -32,7 +32,11 @@ const RootNavigator = () => {
       <ClerkLoaded>
         <Stack.Navigator>
           {isSignedIn ? (
-            <Stack.Screen name="Tab" component={TabScreen} />
+            <Stack.Screen
+              name="Tab"
+              component={TabScreen}
+              options={{ title: "EventPass" }}
+            />
           ) : (
             <>
               <Stack.Screen

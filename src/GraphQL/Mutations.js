@@ -171,6 +171,21 @@ export const UPDATE_EVENT = gql`
   }
 `;
 
+export const UPDATE_EVENT_EXPIRED_STATUS = gql`
+  mutation UpdateEventExpiredStatus($id: Int!, $isExpired: Boolean!) {
+    updateEventExpiredStatus(id: $id, isExpired: $isExpired) {
+      id
+      isExpired
+    }
+  }
+`;
+
+export const UPDATE_ENTRIES_COUNT = gql`
+  mutation UpdateEntriesCount($id: Int!, $entriesCount: Int!) {
+    updateEntriesCount(id: $id, entriesCount: $entriesCount)
+  }
+`;
+
 export const DELETE_EVENT = gql`
   mutation DeleteEvent($id: Int!) {
     deleteEvent(id: $id)

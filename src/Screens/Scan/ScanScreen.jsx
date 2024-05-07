@@ -8,19 +8,22 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { BarCodeScanner } from "expo-barcode-scanner";
-import { GET_EVENT_VISITOR_BY_ID } from "../../GraphQL/Queries";
-import { useLazyQuery } from "@apollo/client";
 import BarcodeMask from "react-native-barcode-mask";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { GET_EVENT_VISITOR_BY_ID } from "../../GraphQL/Queries";
+import { UPDATE_ENTRIES_COUNT } from "../../GraphQL/Mutations";
+import { useLazyQuery, useMutation } from "@apollo/client";
 
 export default ScanScreen = () => {
   const [hasPermission, setHasPermission] = useState(false);
   const [scanData, setScanData] = useState("");
   const [openScanner, setOpenScanner] = useState(false);
+  const [scanMaximised, setScanMaximised] = useState(false);
   const [getEventVisitor, { loading, data, error }] = useLazyQuery(
     GET_EVENT_VISITOR_BY_ID
   );
+  const [updateEntriesCount] = useMutation(UPDATE_ENTRIES_COUNT);
 
   useEffect(() => {
     (async () => {
@@ -37,10 +40,35 @@ export default ScanScreen = () => {
     );
   }
 
-  const handleBarCodeScanned = ({ type, data }) => {
-    setScanData(data);
+  const handleBarCodeScanned = async ({ type, data: scannedData }) => {
+    // setScanData(data);
+    // setOpenScanner(false);
+    // getEventVisitor({ variables: { id: parseInt(data) } });
+    setScanData(scannedData);
     setOpenScanner(false);
-    getEventVisitor({ variables: { id: parseInt(data) } });
+    console.log("Scanned Data: " + scannedData);
+    const { data: eventData } = await getEventVisitor({
+      variables: { id: parseInt(scannedData) },
+    });
+    console.log(eventData.getEventVisitorById.events.name);
+    if (
+      eventData &&
+      eventData.getEventVisitorById &&
+      eventData.getEventVisitorById.events
+    ) {
+      const { id, entriesCount } = eventData.getEventVisitorById.events;
+      console.log("Entries: " + entriesCount);
+      if (entriesCount > 0) {
+        const updatedEntriesCount = entriesCount - 1;
+        await updateEntriesCount({
+          variables: { id, entriesCount: updatedEntriesCount },
+        });
+        eventData.getEventVisitorById.entriesCount = updatedEntriesCount;
+      } else {
+        setScanData("Exceeded maximum number of scans allowed.");
+        setScanMaximised(true);
+      }
+    }
   };
 
   return (
@@ -76,6 +104,8 @@ export default ScanScreen = () => {
           <View style={styles.contentContainer}>
             {loading ? (
               <ActivityIndicator size="large" color="#0000ff" />
+            ) : scanMaximised ? (
+              <Text style={styles.errorText}>{scanData}</Text>
             ) : (
               <>
                 {data && data.getEventVisitorById ? (
@@ -93,7 +123,9 @@ export default ScanScreen = () => {
                     {/* Render other details here */}
                   </>
                 ) : error ? (
-                  <Text style={styles.errorText}>Invalid QR</Text>
+                  <Text style={styles.errorText}>
+                    {error.graphQLErrors[0]?.message || "Invalid QR"}
+                  </Text>
                 ) : (
                   <Text style={styles.scanData}>Scan The QR</Text>
                 )}
@@ -107,6 +139,7 @@ export default ScanScreen = () => {
               color="#5E63E9"
               onPress={() => {
                 setScanData("");
+                setScanMaximised(false);
                 setOpenScanner(true);
               }}
             />

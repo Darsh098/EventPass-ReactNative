@@ -226,6 +226,7 @@ export const GET_EVENT_VISITOR_BY_ID = gql`
         endTime
         timeDuration
         entriesCount
+        isExpired
         organizer {
           id
           firstName
@@ -236,10 +237,6 @@ export const GET_EVENT_VISITOR_BY_ID = gql`
           createdAt
           updatedAt
         }
-        photo
-        createdAt
-        updatedAt
-        isExpired
       }
       visitor {
         id
@@ -251,8 +248,6 @@ export const GET_EVENT_VISITOR_BY_ID = gql`
         createdAt
         updatedAt
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -271,14 +266,21 @@ export const GET_EVENT_VISITOR_BY_USER_CLERK_ID = gql`
         endTime
         timeDuration
         entriesCount
+        isExpired
         organizer {
           id
           firstName
+          lastName
+          clerkId
+          email
         }
       }
       visitor {
         id
         firstName
+        lastName
+        clerkId
+        email
       }
     }
   }

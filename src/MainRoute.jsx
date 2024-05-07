@@ -7,6 +7,7 @@ import SignUpScreen from "./Screens/SignUpScreen";
 import SignInScreen from "./Screens/SignInScreen";
 import VerifyCodeScreen from "./Screens/VerifyCodeScreen";
 import { NavigationContainer } from "@react-navigation/native";
+import EventDetail from "./Components/EventDetail";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,11 +33,18 @@ const RootNavigator = () => {
       <ClerkLoaded>
         <Stack.Navigator>
           {isSignedIn ? (
-            <Stack.Screen
-              name="Tab"
-              component={TabScreen}
-              options={{ title: "EventPass" }}
-            />
+            <>
+              <Stack.Screen
+                name="Tab"
+                component={TabScreen}
+                options={{ title: "EventPass" }}
+              />
+              <Stack.Screen
+                name="EventDetail"
+                component={EventDetail}
+                options={{ title: "Event Details" }}
+              />
+            </>
           ) : (
             <>
               <Stack.Screen

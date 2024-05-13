@@ -5,6 +5,7 @@ import { GET_EVENTS_BY_ORGANIZER_CLERK_ID } from "../GraphQL/Queries";
 import { SignedIn, SignedOut, useAuth, useUser } from "@clerk/clerk-expo";
 import { log } from "../../logger";
 import { AntDesign, Entypo } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function SafeMyProfileScreen(props) {
   return (
@@ -24,9 +25,28 @@ export default function SafeMyProfileScreen(props) {
 function MyProfileScreen({ navigation }) {
   const { getToken, signOut } = useAuth();
   const { user } = useUser();
-  const { loading, error, data } = useQuery(GET_EVENTS_BY_ORGANIZER_CLERK_ID, {
-    variables: { clerkId: user.id },
-  });
+  const { loading, error, data, refetch } = useQuery(
+    GET_EVENTS_BY_ORGANIZER_CLERK_ID,
+    {
+      variables: { clerkId: user.id },
+    }
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        try {
+          await refetch();
+        } catch (error) {
+          console.error("Error refetching data:", error);
+        }
+      };
+
+      fetchData();
+
+      return () => {}; // Cleanup function
+    }, [])
+  );
 
   const [sessionToken, setSessionToken] = React.useState("");
 
@@ -89,7 +109,14 @@ function MyProfileScreen({ navigation }) {
                   <Text>Date: {event.eventDate}</Text>
                   <Text>Venue: {event.venue}</Text>
                 </View>
-                <TouchableOpacity style={styles.rightIconContainer}>
+                <TouchableOpacity
+                  style={styles.rightIconContainer}
+                  onPress={() =>
+                    navigation.navigate("EventVisitorsDetail", {
+                      eventDetails: event,
+                    })
+                  }
+                >
                   <AntDesign name="right" size={24} color="#5E63E9" />
                 </TouchableOpacity>
               </View>

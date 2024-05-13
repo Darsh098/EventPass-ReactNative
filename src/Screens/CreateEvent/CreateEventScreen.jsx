@@ -14,8 +14,10 @@ import { useMutation } from "@apollo/client";
 import { CREATE_EVENT, CREATE_EVENT_VISITOR } from "../../GraphQL/Mutations";
 import { useUser } from "@clerk/clerk-expo";
 import UserSearchModal from "../../Components/UserSearchModal";
-import { AntDesign } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
+import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
+import { firebase } from "../../../config";
+import * as FileSystem from "expo-file-system";
+import * as ImagePicker from "expo-image-picker";
 
 const CreateEventScreen = () => {
   const { user } = useUser();
@@ -26,7 +28,10 @@ const CreateEventScreen = () => {
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [entriesCount, setEntriesCount] = useState("");
-  const [photo, setPhoto] = useState("");
+  const [photo, setPhoto] = useState(
+    "https://firebasestorage.googleapis.com/v0/b/eventpass-84cb8.appspot.com/o/futuristic-view-school-classroom-with-state-art-architecture.jpg?alt=media&token=18a6967f-4f3a-4f9d-8b53-c2b03521af91"
+  );
+  const [image, setImage] = useState(null);
   const [showDate, setShowDate] = useState(false);
   const [showStartTime, setShowStartTime] = useState(false);
   const [showEndTime, setShowEndTime] = useState(false);
@@ -35,11 +40,91 @@ const CreateEventScreen = () => {
   const [createEvent] = useMutation(CREATE_EVENT);
   const [createEventVisitor] = useMutation(CREATE_EVENT_VISITOR);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   // To Check Which Are The Visitors Selected
   // useEffect(() => {
   //   console.log(visitors);
   // }, [visitors]);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      // setImage(result.assets[0].uri);
+      setImage(result.assets[0].uri);
+      uploadMedia(result.assets[0].uri);
+    }
+  };
+
+  // const uploadMedia = async () => {
+  //   setUploading(true);
+  //   console.log("Image: " + image);
+  //   try {
+  //     if (!image) {
+  //       console.error("Image URI is null or undefined");
+  //       return;
+  //     }
+
+  //     const { uri } = await FileSystem.getInfoAsync(image);
+  //     const blob = await new Promise((resolve, reject) => {
+  //       const xhr = new XMLHttpRequest();
+  //       xhr.onload = () => {
+  //         resolve(xhr.response);
+  //       };
+  //       xhr.onerror = (e) => {
+  //         reject(new TypeError("Network Request Failed"));
+  //       };
+  //       xhr.responseType = "blob";
+  //       xhr.open("GET", uri, true);
+  //       xhr.send(null);
+  //     });
+
+  //     const filename = image.substring(image.lastIndexOf("/") + 1);
+  //     const ref = firebase.storage().ref().child(filename);
+
+  //     await ref.put(blob);
+  //     const downloadURL = await ref.getDownloadURL();
+  //     setImage(null);
+  //     setPhoto(downloadURL);
+  //     setUploading(false);
+  //   } catch (error) {
+  //     console.error(error);
+  //     setUploading(false);
+  //   }
+  // };
+
+  const uploadMedia = async (img) => {
+    setUploading(true);
+    try {
+      if (!img) {
+        console.error("Image URI is null or undefined");
+        setUploading(false);
+        return;
+      }
+
+      const { uri } = await FileSystem.getInfoAsync(img);
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      const filename = img.substring(img.lastIndexOf("/") + 1);
+      const ref = firebase.storage().ref().child(filename);
+
+      await ref.put(blob);
+      const downloadURL = await ref.getDownloadURL();
+      setImage(null);
+      setPhoto(downloadURL);
+      setUploading(false);
+    } catch (error) {
+      console.error(error);
+      setUploading(false);
+    }
+  };
 
   const handleCreateEvent = async () => {
     try {
@@ -63,7 +148,6 @@ const CreateEventScreen = () => {
         for (const email of visitors) {
           await createEventVisitor({
             variables: {
-              QR_code: "null",
               eventId: data.createEvent.id,
               email: email,
             },
@@ -94,11 +178,9 @@ const CreateEventScreen = () => {
   };
 
   const calculateDurationInMinutes = (startTime, endTime) => {
-    // Convert start and end time to milliseconds since midnight
     const start = startTime.getHours() * 60 + startTime.getMinutes();
     const end = endTime.getHours() * 60 + endTime.getMinutes();
 
-    // Calculate the difference in minutes
     const durationInMinutes = end - start;
 
     return durationInMinutes;
@@ -127,30 +209,29 @@ const CreateEventScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Create New Event</Text>
-      {/* Input fields */}
+
       <View style={styles.inputContainer}>
-        {/* Name */}
         <TextInput
           style={styles.input}
           placeholder="Name"
           value={name}
           onChangeText={setName}
         />
-        {/* Description */}
+
         <TextInput
           style={styles.input}
           placeholder="Description"
           value={description}
           onChangeText={setDescription}
         />
-        {/* Venue */}
+
         <TextInput
           style={styles.input}
           placeholder="Venue"
           value={venue}
           onChangeText={setVenue}
         />
-        {/* Number of Entries */}
+
         <TextInput
           style={styles.input}
           placeholder="Number Of Entries"
@@ -159,17 +240,12 @@ const CreateEventScreen = () => {
           value={entriesCount}
           maxLength={3}
         />
-        {/* Photo URL */}
-        <TextInput
-          style={styles.input}
-          placeholder="Photo URL"
-          value={photo}
-          onChangeText={setPhoto}
-        />
       </View>
 
-      {/* Date, Time, Add Visitor Icons */}
       <View style={styles.iconContainer}>
+        <TouchableOpacity style={styles.iconButton} onPress={pickImage}>
+          <MaterialIcons name="add-photo-alternate" size={24} color="#5E63E9" />
+        </TouchableOpacity>
         <TouchableOpacity
           style={styles.iconButton}
           onPress={() => setShowDate(true)}
@@ -190,7 +266,6 @@ const CreateEventScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Date Picker */}
       {showDate && (
         <DateTimePicker
           value={date}
@@ -202,7 +277,6 @@ const CreateEventScreen = () => {
         />
       )}
 
-      {/* Start Time Picker */}
       {showStartTime && (
         <DateTimePicker
           value={startTime}
@@ -214,7 +288,6 @@ const CreateEventScreen = () => {
         />
       )}
 
-      {/* End Time Picker */}
       {showEndTime && (
         <DateTimePicker
           value={endTime}
@@ -226,7 +299,6 @@ const CreateEventScreen = () => {
         />
       )}
 
-      {/* Create and Cancel Buttons */}
       <View style={styles.buttonContainer}>
         <Button title="Create" onPress={handleCreateEvent} />
         <Button
@@ -289,7 +361,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     marginTop: 20,
   },
   cancelButton: {

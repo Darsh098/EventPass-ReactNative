@@ -8,6 +8,8 @@ import SignInScreen from "./Screens/SignInScreen";
 import VerifyCodeScreen from "./Screens/VerifyCodeScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import EventDetail from "./Components/EventDetail";
+import EventVisitorsDetail from "./Components/EventVisitorDetail";
+import EditEventScreen from "./Screens/EditEvent/EditEventScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +45,17 @@ const RootNavigator = () => {
                 name="EventDetail"
                 component={EventDetail}
                 options={{ title: "Event Details" }}
+              />
+              <Stack.Screen
+                name="EventVisitorsDetail"
+                component={EventVisitorsDetail}
+                options={{ title: "Event Details" }}
+              />
+
+              <Stack.Screen
+                name="EditEvent"
+                component={EditEventScreen}
+                options={{ title: "Edit Event" }}
               />
             </>
           ) : (

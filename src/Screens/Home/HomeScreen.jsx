@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Text,
   View,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { useMutation, useQuery } from "@apollo/client";
 import QRCode from "react-native-qrcode-svg";
 import { GET_EVENT_VISITOR_BY_USER_CLERK_ID } from "../../GraphQL/Queries";
 import { useUser } from "@clerk/clerk-expo";
 import { UPDATE_EVENT_EXPIRED_STATUS } from "../../GraphQL/Mutations";
+import { useFocusEffect } from "@react-navigation/native";
 
 // const HomeScreen = ({ params }) => {
 //   const { user } = useUser();
@@ -131,11 +133,27 @@ const COLORS = {
 
 const HomeScreen = ({ navigation }) => {
   const { user } = useUser();
-  const { loading, error, data } = useQuery(
+  const { loading, error, data, refetch } = useQuery(
     GET_EVENT_VISITOR_BY_USER_CLERK_ID,
     {
       variables: { clerkId: user.id },
     }
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        try {
+          await refetch();
+        } catch (error) {
+          console.error("Error refetching data:", error);
+        }
+      };
+
+      fetchData();
+
+      return () => {}; // Cleanup function
+    }, [])
   );
 
   const [updateEventExpiredStatus] = useMutation(UPDATE_EVENT_EXPIRED_STATUS);
@@ -211,22 +229,30 @@ const HomeScreen = ({ navigation }) => {
             <Text style={styles.eventDetail}>
               Venue: {visitor.events.venue}
             </Text>
-            <Text
-              style={[
-                styles.eventDetail,
-                { color: COLORS.primary, fontWeight: "bold" },
-              ]}
-            >
-              {visitor.events.isExpired && "Event Ended"}
-            </Text>
+            {visitor.events.isExpired && (
+              <Text
+                style={[
+                  styles.eventDetail,
+                  { color: COLORS.primary, fontWeight: "bold" },
+                ]}
+              >
+                Event Ended
+              </Text>
+            )}
           </View>
         </View>
-        <View style={styles.qrCodeContainer}>
+        {/* <View style={styles.qrCodeContainer}>
           <QRCode
             // color={COLORS.primary}
             enableLinearGradient={true}
             linearGradient={[COLORS.primary, COLORS.secondary]}
             value={visitor.id.toString()}
+          />
+        </View> */}
+        <View style={styles.imageContainer}>
+          <Image
+            source={{ uri: visitor.events.photo }}
+            style={styles.eventImage}
           />
         </View>
       </TouchableOpacity>
@@ -283,6 +309,21 @@ const styles = StyleSheet.create({
   },
   qrCodeContainer: {
     alignItems: "flex-end",
+  },
+  imageContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
+    overflow: "hidden",
+    backgroundColor: "#f0f0f0",
+    marginVertical: 10,
+    width: 100,
+    height: 100,
+  },
+  eventImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
 });
 

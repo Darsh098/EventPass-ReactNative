@@ -75,7 +75,7 @@ export const GET_ALL_EVENTS = gql`
       updatedAt
       eventVisitors {
         id
-        QR_code
+        scanned
         visitor {
           id
           firstName
@@ -121,7 +121,7 @@ export const GET_EVENT_BY_ID = gql`
       updatedAt
       eventVisitors {
         id
-        QR_code
+        scanned
         visitor {
           id
           firstName
@@ -147,6 +147,7 @@ export const GET_EVENTS_BY_ORGANIZER_CLERK_ID = gql`
       name
       description
       venue
+      photo
       eventDate
       startTime
       endTime
@@ -162,6 +163,15 @@ export const GET_EVENTS_BY_ORGANIZER_CLERK_ID = gql`
         createdAt
         updatedAt
       }
+      eventVisitors {
+        visitor {
+          id
+          firstName
+          lastName
+          profilePhoto
+          email
+        }
+      }
     }
   }
 `;
@@ -170,7 +180,7 @@ export const GET_ALL_EVENT_VISITORS = gql`
   query {
     getAllEventVisitors {
       id
-      QR_code
+      scanned
       events {
         id
         name
@@ -216,6 +226,7 @@ export const GET_EVENT_VISITOR_BY_ID = gql`
   query GetEventVisitorById($id: Int!) {
     getEventVisitorById(id: $id) {
       id
+      scanned
       events {
         id
         name
@@ -264,6 +275,7 @@ export const GET_EVENT_VISITOR_BY_USER_CLERK_ID = gql`
         eventDate
         startTime
         endTime
+        photo
         timeDuration
         entriesCount
         isExpired

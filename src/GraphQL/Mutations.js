@@ -129,7 +129,6 @@ export const UPDATE_EVENT = gql`
     $endTime: String
     $timeDuration: Int
     $entriesCount: Int
-    $photo: String
   ) {
     updateEvent(
       id: $id
@@ -141,32 +140,9 @@ export const UPDATE_EVENT = gql`
       endTime: $endTime
       timeDuration: $timeDuration
       entriesCount: $entriesCount
-      photo: $photo
     ) {
       id
       name
-      description
-      venue
-      eventDate
-      startTime
-      endTime
-      timeDuration
-      entriesCount
-      organizer {
-        id
-        firstName
-        lastName
-        clerkId
-        email
-        profilePhoto
-        mobileNumber
-        createdAt
-        updatedAt
-      }
-      photo
-      createdAt
-      updatedAt
-      isExpired
     }
   }
 `;
@@ -193,14 +169,9 @@ export const DELETE_EVENT = gql`
 `;
 
 export const CREATE_EVENT_VISITOR = gql`
-  mutation CreateEventVisitor(
-    $QR_code: String!
-    $eventId: Int!
-    $email: String!
-  ) {
-    createEventVisitor(QR_code: $QR_code, eventId: $eventId, email: $email) {
+  mutation CreateEventVisitor($eventId: Int!, $email: String!) {
+    createEventVisitor(eventId: $eventId, email: $email) {
       id
-      QR_code
       createdAt
       updatedAt
     }
@@ -208,55 +179,16 @@ export const CREATE_EVENT_VISITOR = gql`
 `;
 
 export const UPDATE_EVENT_VISITOR = gql`
-  mutation UpdateEventVisitor($id: Int!, $QR_code: String) {
-    updateEventVisitor(id: $id, QR_code: $QR_code) {
+  mutation UpdateEventVisitor($id: Int!, $scanned: Int!) {
+    updateEventVisitor(id: $id, scanned: $scanned) {
       id
-      QR_code
-      events {
-        id
-        name
-        description
-        venue
-        eventDate
-        startTime
-        endTime
-        timeDuration
-        entriesCount
-        organizer {
-          id
-          firstName
-          lastName
-          clerkId
-          email
-          profilePhoto
-          mobileNumber
-          createdAt
-          updatedAt
-        }
-        photo
-        createdAt
-        updatedAt
-        isExpired
-      }
-      visitor {
-        id
-        firstName
-        lastName
-        clerkId
-        email
-        profilePhoto
-        mobileNumber
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
+      scanned
     }
   }
 `;
 
 export const DELETE_EVENT_VISITOR = gql`
-  mutation DeleteEventVisitor($id: Int!) {
-    deleteEventVisitor(id: $id)
+  mutation DeleteEventVisitor($id: Int!, $email: String!) {
+    deleteEventVisitor(id: $id, email: $email)
   }
 `;

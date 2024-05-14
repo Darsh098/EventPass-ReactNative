@@ -4,23 +4,73 @@
   },
   "build": {
     "development": {
-      "developmentClient": true,
-      "distribution": "internal"
-    },
-    "preview": {
+      "channel": "development",
+      "env": {
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_cHJpbWUtdGhydXNoLTM1LmNsZXJrLmFjY291bnRzLmRldiQ",
+        "EXPO_PUBLIC_GRAPHQL_API_ENDPOINT": "https://taskpulse-backend-darshdoshi.koyeb.app/graphql"
+      },
       "distribution": "internal",
+      "ios": {
+        "autoIncrement": true,
+        "resourceClass": "m-medium"
+      },
       "android": {
         "buildType": "apk"
       }
     },
-    "production": {
+    "test": {
+      "channel": "test",
       "env": {
         "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_cHJpbWUtdGhydXNoLTM1LmNsZXJrLmFjY291bnRzLmRldiQ",
         "EXPO_PUBLIC_GRAPHQL_API_ENDPOINT": "https://taskpulse-backend-darshdoshi.koyeb.app/graphql"
+      },
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "autoIncrement": true,
+        "resourceClass": "m-medium"
+      }
+    },
+    "preview": {
+      "channel": "preview",
+      "env": {
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_cHJpbWUtdGhydXNoLTM1LmNsZXJrLmFjY291bnRzLmRldiQ",
+        "EXPO_PUBLIC_GRAPHQL_API_ENDPOINT": "https://taskpulse-backend-darshdoshi.koyeb.app/graphql"
+      },
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "autoIncrement": true,
+        "resourceClass": "m-medium"
+      }
+    },
+    "production": {
+      "channel": "production",
+      "env": {
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_cHJpbWUtdGhydXNoLTM1LmNsZXJrLmFjY291bnRzLmRldiQ",
+        "EXPO_PUBLIC_GRAPHQL_API_ENDPOINT": "https://taskpulse-backend-darshdoshi.koyeb.app/graphql"
+      },
+      "ios": {
+        "autoIncrement": true,
+        "resourceClass": "m-medium"
+      },
+      "android": {
+        "autoIncrement": true,
+        "buildType": "app-bundle"
       }
     }
   },
   "submit": {
-    "production": {}
+    "test": {},
+    "preview": {},
+    "production": {
+      "android": {
+        "track": "internal",
+        "releaseStatus": "draft"
+      }
+    }
   }
 }

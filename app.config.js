@@ -11,4 +11,10 @@ module.exports = {
   android: {
     package: "com.example.eventpass",
   },
+  updates: {
+    url: "https://u.expo.dev/a1f863f6-77a1-4f31-a2ff-2456f84f6edb",
+  },
+  runtimeVersion: {
+    policy: "appVersion",
+  },
 };

@@ -794,26 +794,26 @@
     "@babel/helper-validator-identifier" "^7.24.5"
     to-fast-properties "^2.0.0"
 
-"@clerk/clerk-expo@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@clerk/clerk-expo/-/clerk-expo-1.1.0.tgz#71d1654d550353f3d5310407c5130a92506095a1"
-  integrity sha512-BWWbvuheO5aDrSVm5zlDgNNLo4Zuw1VSJ4QRzaTpy7Z5mpNudlQW0dPT8XoQZYoEINX6HcAENciWGIFY5UPBcQ==
+"@clerk/clerk-expo@^1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@clerk/clerk-expo/-/clerk-expo-1.1.4.tgz#468012a41767eb5ce8b20ab9740e36dcd84c24c0"
+  integrity sha512-h3iALBqerRIGXRR6a3ktfqAbFyyeEnbal45sGsEghYQ1lPZnHf042eqvw2xqEbVTSA5UnYoi+zwpOkdYMwtpGg==
   dependencies:
-    "@clerk/clerk-js" "5.2.4"
-    "@clerk/clerk-react" "5.0.4"
-    "@clerk/shared" "2.0.2"
+    "@clerk/clerk-js" "5.4.0"
+    "@clerk/clerk-react" "5.1.0"
+    "@clerk/shared" "2.1.1"
     base-64 "^1.0.0"
     react-native-url-polyfill "2.0.0"
     tslib "2.4.1"
 
-"@clerk/clerk-js@5.2.4":
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/@clerk/clerk-js/-/clerk-js-5.2.4.tgz#e465a00cf81f1b3de5933417b162baf25bb88295"
-  integrity sha512-0Uyth9GnGNxYKQNxB1yD4PWm2VXcv2QTuOMga4oNAYpUg7aJtTfPna0oHjlFKiJECnunlR75A4h89EFdMz+6Qg==
+"@clerk/clerk-js@5.4.0":
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/@clerk/clerk-js/-/clerk-js-5.4.0.tgz#292890ad781370e6a6c9741fe7d70ce64b6fc3a8"
+  integrity sha512-eUP+jRuHfa7vvn/Ffz5c/FwRi48JWVlcYKAwbZcujq4ZjkkYLVbyg3czn84UdEeEDLrzn/tYZlefWrq2EV+I+w==
   dependencies:
-    "@clerk/localizations" "2.3.1"
-    "@clerk/shared" "2.0.2"
-    "@clerk/types" "4.2.1"
+    "@clerk/localizations" "2.4.2"
+    "@clerk/shared" "2.1.1"
+    "@clerk/types" "4.4.0"
     "@emotion/cache" "11.11.0"
     "@emotion/react" "11.11.1"
     "@floating-ui/react" "0.25.4"
@@ -828,34 +828,34 @@
     qs "6.11.0"
     regenerator-runtime "0.13.11"
 
-"@clerk/clerk-react@5.0.4":
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/@clerk/clerk-react/-/clerk-react-5.0.4.tgz#ec2154a8a81c48d26f1d1b06db21cdba1cddfb68"
-  integrity sha512-sVpzLgz/2Muj7W2M3j1g4l296ld+XlEKIQ32sUhFeIM4XiOpBaO8bFu1c4YcdKaetreI6f6dB/K9lYJLGZTtFw==
+"@clerk/clerk-react@5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@clerk/clerk-react/-/clerk-react-5.1.0.tgz#699bf53fa099c507ac38245d84689d63e76f46c7"
+  integrity sha512-drc/V0J+h9Jsz32QsL7WmuUhhhkU21KbNz5mwLPbSzBMoLg43sx6aRjJGCfBQYPxPsuFZWDlKoJhX6LZ8yxHcA==
   dependencies:
-    "@clerk/shared" "2.0.2"
-    "@clerk/types" "4.2.1"
+    "@clerk/shared" "2.1.1"
+    "@clerk/types" "4.4.0"
     tslib "2.4.1"
 
-"@clerk/localizations@2.3.1":
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/@clerk/localizations/-/localizations-2.3.1.tgz#1ad305de17963272594aa3fed47bbac868909225"
-  integrity sha512-FaxePx9ZjKCCm2touEWIV3atkUvK6YnL7ETcV5rVZb+1bOW/rHyG8rrhQwuzCxtjiURtj1CTyXSnviYlaKjY8g==
+"@clerk/localizations@2.4.2":
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/@clerk/localizations/-/localizations-2.4.2.tgz#4206d4f46bc16d021c494bed8d76a11b9607583f"
+  integrity sha512-bDxHZ6YG+oHB03h0fl7jlOmwTwwtsrB9KFVepwI9L7vJixPNFRdnGcCgAcOFZ+E+dn6EBY/W2RgP3hbVRdWV8g==
 
-"@clerk/shared@2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-2.0.2.tgz#19423474fa7ab5a601f73fb10d2e678ce12d8f49"
-  integrity sha512-uQXbBJyUV6B4y/cKIgKypVmCdCh7pHeQYbASCKI3RzlsC3FPyopy0hTlAIvXJqjulPYBfRUI1w2FDRJzpEk3sw==
+"@clerk/shared@2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-2.1.1.tgz#246f768b567b65b0ed331859439435a1e2c20c49"
+  integrity sha512-cj8VZdEtuqghHBFApl2fFgBtjYZ0NN085uXPqSvdBS62EIKpSENCqm7Ug1H5R2WSuCIv819ZZEBxPiYZM0TNFg==
   dependencies:
     glob-to-regexp "0.4.1"
     js-cookie "3.0.1"
     std-env "^3.7.0"
     swr "2.2.0"
 
-"@clerk/types@4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@clerk/types/-/types-4.2.1.tgz#a1974250e6e8681dfb143262f5018d8758e3f926"
-  integrity sha512-tR7Qd1P5Fa4n81ZxKA0tFPJd1OgrL7chU/+moq/LSnK8ZRN/DUzh5K7730sdw5F26CKtT6pzmW+irtgpYLYdDQ==
+"@clerk/types@4.4.0":
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@clerk/types/-/types-4.4.0.tgz#9837d26c304e240a2e5531bd673d0a6c8500c2c5"
+  integrity sha512-OaT02uLG1P/jBFNyoPM3n9nLdV4H0etTpa/l3iTW4IgOLiAINToLpMOvEpWzKWUq9nvmOouZlBzPVMozu7dwDg==
   dependencies:
     csstype "3.1.1"
 
@@ -6535,7 +6535,7 @@ react-native-tab-view@^3.5.2:
 
 react-native-url-polyfill@2.0.0:
   version "2.0.0"
-  resolved "https://registry.npmjs.org/react-native-url-polyfill/-/react-native-url-polyfill-2.0.0.tgz"
+  resolved "https://registry.yarnpkg.com/react-native-url-polyfill/-/react-native-url-polyfill-2.0.0.tgz#db714520a2985cff1d50ab2e66279b9f91ffd589"
   integrity sha512-My330Do7/DvKnEvwQc0WdcBnFPploYKp9CYlefDXzIdEaA+PAhDYllkvGeEroEzvc4Kzzj2O4yVdz8v6fjRvhA==
   dependencies:
     whatwg-url-without-unicode "8.0.0-3"

@@ -13,7 +13,7 @@ import { styles } from "../Theme/Styles";
 import { COLORS } from "../Common/constants";
 
 export default function SignInScreen({ navigation }) {
-  const { signIn, setSession, isLoaded } = useSignIn();
+  const { signIn, setActive, isLoaded } = useSignIn();
 
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +33,7 @@ export default function SignInScreen({ navigation }) {
         password,
       });
 
-      await setSession(completeSignIn.createdSessionId);
+      await setActive({ session: completeSignIn.createdSessionId });
       setServerErrors([]);
     } catch (err) {
       log("Error:> " + err?.status || "");

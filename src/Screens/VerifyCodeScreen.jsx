@@ -12,7 +12,7 @@ import { styles } from "../Theme/Styles";
 import { BORDERRADIUS, COLORS, SPACING } from "../Common/constants";
 
 export default function VerifyCodeScreen({ navigation }) {
-  const { isLoaded, signUp, setSession } = useSignUp();
+  const { isLoaded, signUp, setActive } = useSignUp();
 
   const [code, setCode] = React.useState("");
   const [serverErrors, setServerErrors] = React.useState([]);
@@ -26,10 +26,10 @@ export default function VerifyCodeScreen({ navigation }) {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code,
       });
-
-      await setSession(completeSignUp.createdSessionId);
+      await setActive({ session: completeSignUp.createdSessionId });
       setServerErrors([]);
     } catch (err) {
+      console.log(err);
       log("Error:> " + err?.status || "");
       log("Error:> " + err?.errors ? JSON.stringify(err.errors) : err);
       if (err?.errors) {

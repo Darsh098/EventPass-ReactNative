@@ -12,6 +12,7 @@ import {
 import { useQuery } from "@apollo/client";
 import { GET_ALL_USERS } from "../GraphQL/Queries";
 import { AntDesign } from "@expo/vector-icons";
+import { BORDERRADIUS, COLORS, FONTSIZE, SPACING } from "../Common/constants";
 
 const UserSearchModal = ({
   isVisible,
@@ -77,12 +78,12 @@ const UserSearchModal = ({
       <View style={styles.modalContent}>
         <View style={styles.header}>
           <Text style={styles.headerText}>Search Users</Text>
-          {/* <Button title="Close" onPress={onClose} color="#5E63E9" /> */}
+          {/* <Button title="Close" onPress={onClose} color={COLORS.Primary} /> */}
           <View style={styles.iconContainer}>
             <AntDesign
               name="close"
-              size={24}
-              color="#5E63E9"
+              size={FONTSIZE.size_24}
+              color={COLORS.Primary}
               onPress={onClose}
             />
           </View>
@@ -93,7 +94,7 @@ const UserSearchModal = ({
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
-        <Button title="Search" onPress={handleSearch} color="#5E63E9" />
+        <Button title="Search" onPress={handleSearch} color={COLORS.Primary} />
         <FlatList
           contentContainerStyle={styles.listContainer}
           data={users}
@@ -110,56 +111,56 @@ const styles = StyleSheet.create({
   modalContent: {
     flex: 1,
     justifyContent: "center",
-    padding: 20,
+    padding: SPACING.space_20,
   },
   listContainer: {
-    marginTop: 10,
+    marginTop: SPACING.space_10,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: SPACING.space_10,
   },
   headerText: {
-    fontSize: 20,
+    fontSize: FONTSIZE.size_20,
     fontWeight: "bold",
-    color: "#5E63E9",
+    color: COLORS.Primary,
   },
   iconContainer: {
-    backgroundColor: "#E8E8E8",
-    borderRadius: 8,
-    padding: 10,
+    backgroundColor: COLORS.IconBackground,
+    borderRadius: BORDERRADIUS.radius_8,
+    padding: SPACING.space_10,
   },
   searchInput: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    marginBottom: 10,
+    borderWidth: SPACING.space_1,
+    borderColor: COLORS.LightGrey2,
+    padding: SPACING.space_10,
+    marginBottom: SPACING.space_10,
   },
   userList: {
     flex: 1,
-    marginBottom: 10,
+    marginBottom: SPACING.space_10,
   },
   userItem: {
-    padding: 10,
-    marginBottom: 5,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
+    padding: SPACING.space_10,
+    marginBottom: SPACING.space_5,
+    borderWidth: SPACING.space_1,
+    borderColor: COLORS.LightGrey2,
+    borderRadius: BORDERRADIUS.radius_5,
   },
   selectedUserItem: {
-    // backgroundColor: "#5E63E9",
-    backgroundColor: "rgba(94, 99, 233, 0.2)",
+    // backgroundColor:  COLORS.Primary,
+    backgroundColor: COLORS.PrimaryAlpha,
   },
   name: {
-    fontSize: 16,
+    fontSize: FONTSIZE.size_16,
     fontWeight: "bold",
-    color: "#333",
+    color: COLORS.DarkGrey,
   },
   email: {
-    fontSize: 14,
-    color: "#666",
+    fontSize: FONTSIZE.size_14,
+    color: COLORS.MediumGrey,
   },
 });
 

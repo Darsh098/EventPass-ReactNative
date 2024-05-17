@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { Button, Input, Avatar, Card, Icon } from "react-native-elements";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useMutation } from "@apollo/client";
 import {
@@ -16,8 +10,13 @@ import {
 } from "../../GraphQL/Mutations";
 import { useUser } from "@clerk/clerk-expo";
 import UserSearchModal from "../../Components/UserSearchModal";
-import { AntDesign } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
+import {
+  BORDERRADIUS,
+  COLORS,
+  FONTSIZE,
+  RouteNames,
+  SPACING,
+} from "../../Common/constants";
 
 const EditEventScreen = ({ route, navigation }) => {
   const { user } = useUser();
@@ -133,7 +132,7 @@ const EditEventScreen = ({ route, navigation }) => {
         },
       });
 
-      navigation.navigate("MyProfile");
+      navigation.navigate(RouteNames.PROFILE_SCREEN);
     } catch (err) {
       console.error("Error updating event:", error.networkError.result);
     }
@@ -161,51 +160,79 @@ const EditEventScreen = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Edit Event</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Venue"
-        value={venue}
-        onChangeText={setVenue}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Number Of Entries"
-        keyboardType="numeric"
-        onChangeText={setEntriesCount}
-        value={entriesCount}
-        maxLength={3}
-      />
+      <Card containerStyle={styles.card}>
+        <Input
+          placeholder="Name"
+          value={name}
+          onChangeText={setName}
+          leftIcon={
+            <Icon name="event" size={FONTSIZE.size_24} color={COLORS.Primary} />
+          }
+          maxLength={30}
+        />
+        <Input
+          placeholder="Description"
+          value={description}
+          onChangeText={setDescription}
+          leftIcon={
+            <Icon
+              name="description"
+              size={FONTSIZE.size_24}
+              color={COLORS.Primary}
+            />
+          }
+          multiline
+          maxLength={150}
+        />
+        <Input
+          placeholder="Venue"
+          value={venue}
+          onChangeText={setVenue}
+          leftIcon={
+            <Icon
+              name="location-on"
+              size={FONTSIZE.size_24}
+              color={COLORS.Primary}
+            />
+          }
+          maxLength={100}
+        />
+        <Input
+          placeholder="Number Of Entries"
+          keyboardType="numeric"
+          onChangeText={setEntriesCount}
+          value={entriesCount}
+          leftIcon={
+            <Icon name="group" size={FONTSIZE.size_24} color={COLORS.Primary} />
+          }
+          maxLength={2}
+        />
+      </Card>
       <View style={styles.iconContainer}>
-        <TouchableOpacity
-          style={styles.iconButton}
+        <Icon
+          name="calendar"
+          type="antdesign"
+          color={COLORS.Primary}
+          size={FONTSIZE.size_32}
           onPress={() => setShowDate(true)}
-        >
-          <AntDesign name="calendar" size={24} color="#5E63E9" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.iconButton}
+          containerStyle={styles.icon}
+        />
+        <Icon
+          name="clockcircle"
+          type="antdesign"
+          color={COLORS.Primary}
+          size={FONTSIZE.size_32}
           onPress={() => setShowStartTime(true)}
-        >
-          <Entypo name="time-slot" size={24} color="#5E63E9" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.iconButton}
+          containerStyle={styles.icon}
+        />
+        <Icon
+          name="addusergroup"
+          type="antdesign"
+          color={COLORS.Primary}
+          size={FONTSIZE.size_32}
           onPress={() => setIsModalVisible(true)}
-        >
-          <AntDesign name="addusergroup" size={24} color="#5E63E9" />
-        </TouchableOpacity>
+          containerStyle={styles.icon}
+        />
       </View>
       {showDate && (
         <DateTimePicker
@@ -237,7 +264,11 @@ const EditEventScreen = ({ route, navigation }) => {
           style={styles.timePicker}
         />
       )}
-      <Button title="Save Changes" onPress={handleSaveChanges} />
+      <Button
+        title="Save Changes"
+        buttonStyle={styles.editButton}
+        onPress={handleSaveChanges}
+      />
       <UserSearchModal
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
@@ -252,37 +283,51 @@ const EditEventScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingVertical: SPACING.space_20,
+    paddingHorizontal: SPACING.space_10,
+    backgroundColor: COLORS.ContainerBackground,
   },
   title: {
-    fontSize: 24,
+    fontSize: FONTSIZE.size_24,
     fontWeight: "bold",
-    marginBottom: 20,
-    color: "#5E63E9",
+    color: COLORS.Primary,
+    marginHorizontal: SPACING.space_20,
+    marginVertical: SPACING.space_10,
+  },
+  card: {
+    borderRadius: BORDERRADIUS.radius_10,
+    paddingVertical: SPACING.space_20,
   },
   input: {
     width: "100%",
-    borderWidth: 1,
-    borderColor: "#A9A9A9",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
+    borderWidth: SPACING.space_1,
+    borderColor: COLORS.GreyColor,
+    borderRadius: BORDERRADIUS.radius_8,
+    padding: SPACING.space_10,
+    marginBottom: SPACING.space_10,
   },
   iconContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginBottom: 20,
+    marginVertical: SPACING.space_20,
+  },
+  icon: {
+    padding: SPACING.space_10,
   },
   iconButton: {
-    padding: 10,
-    backgroundColor: "#E8E8E8",
-    borderRadius: 8,
+    padding: SPACING.space_10,
+    backgroundColor: COLORS.IconBackground,
+    borderRadius: BORDERRADIUS.radius_8,
   },
   datePicker: {
     width: "100%",
   },
   timePicker: {
     width: "100%",
+  },
+  editButton: {
+    backgroundColor: COLORS.Primary,
+    marginHorizontal: SPACING.space_20,
   },
 });
 

@@ -6,6 +6,13 @@ import { SignedIn, SignedOut, useAuth, useUser } from "@clerk/clerk-expo";
 import { log } from "../../logger";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
+import {
+  BORDERRADIUS,
+  COLORS,
+  FONTSIZE,
+  RouteNames,
+  SPACING,
+} from "../Common/constants";
 
 export default function SafeMyProfileScreen(props) {
   return (
@@ -89,7 +96,11 @@ function MyProfileScreen({ navigation }) {
         </View>
         <TouchableOpacity onPress={onSignOutPress} style={styles.signOutButton}>
           {/* <Text style={styles.signOutButtonText}>Sign out</Text> */}
-          <Entypo name="log-out" size={24} color="#5E63E9" />
+          <Entypo
+            name="log-out"
+            size={FONTSIZE.size_24}
+            color={COLORS.Primary}
+          />
         </TouchableOpacity>
       </View>
       <View style={styles.separator} />
@@ -112,12 +123,19 @@ function MyProfileScreen({ navigation }) {
                 <TouchableOpacity
                   style={styles.rightIconContainer}
                   onPress={() =>
-                    navigation.navigate("EventVisitorsDetail", {
-                      eventDetails: event,
-                    })
+                    navigation.navigate(
+                      RouteNames.EVENT_VISITOR_DETAIL_SCREEN,
+                      {
+                        eventDetails: event,
+                      }
+                    )
                   }
                 >
-                  <AntDesign name="right" size={24} color="#5E63E9" />
+                  <AntDesign
+                    name="right"
+                    size={FONTSIZE.size_24}
+                    color={COLORS.Primary}
+                  />
                 </TouchableOpacity>
               </View>
             ))
@@ -133,13 +151,13 @@ function MyProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#f0f0f0",
+    padding: SPACING.space_20,
+    backgroundColor: COLORS.LightGrey,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20,
+    marginBottom: SPACING.space_20,
     alignItems: "center",
   },
   profileContainer: {
@@ -147,37 +165,37 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
+    width: SPACING.space_40,
+    height: SPACING.space_40,
+    borderRadius: BORDERRADIUS.radius_20,
+    marginRight: SPACING.space_10,
   },
   greeting: {
-    fontSize: 24,
+    fontSize: FONTSIZE.size_24,
     fontWeight: "bold",
-    color: "#333",
+    color: COLORS.DarkGrey,
   },
   email: {
-    color: "#666",
+    color: COLORS.MediumGrey,
   },
   signOutButton: {
-    backgroundColor: "#E8E8E8",
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: COLORS.IconBackground,
+    padding: SPACING.space_10,
+    borderRadius: BORDERRADIUS.radius_8,
   },
   signOutButtonText: {
-    color: "white",
+    color: COLORS.White,
   },
   separator: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    marginBottom: 20,
+    borderBottomWidth: SPACING.space_1,
+    borderBottomColor: COLORS.LightGrey2,
+    marginBottom: SPACING.space_20,
   },
   heading: {
-    fontSize: 20,
+    fontSize: FONTSIZE.size_20,
     fontWeight: "bold",
-    marginBottom: 10,
-    color: "#5E63E9",
+    marginBottom: SPACING.space_10,
+    color: COLORS.Primary,
   },
   eventList: {
     flex: 1,
@@ -185,21 +203,21 @@ const styles = StyleSheet.create({
   eventContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: "#fff",
+    borderWidth: SPACING.space_1,
+    borderColor: COLORS.LightGrey2,
+    borderRadius: BORDERRADIUS.radius_8,
+    padding: SPACING.space_10,
+    marginBottom: SPACING.space_10,
+    backgroundColor: COLORS.White,
   },
   eventDetails: {
     flex: 1,
   },
   eventName: {
-    fontSize: 16,
+    fontSize: FONTSIZE.size_16,
     fontWeight: "bold",
-    color: "#333",
-    marginBottom: 5,
+    color: COLORS.DarkGrey,
+    marginBottom: SPACING.space_5,
   },
   rightIconContainer: {
     justifyContent: "center",

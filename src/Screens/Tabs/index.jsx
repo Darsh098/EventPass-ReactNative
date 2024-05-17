@@ -13,6 +13,7 @@ import {
   MaterialIcons,
   AntDesign,
 } from "@expo/vector-icons";
+import { COLORS, FONTSIZE, RouteNames } from "../../Common/constants";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -33,10 +34,14 @@ const TabScreen = () => {
           primaryPhoneNumber,
         } = userData;
 
+        const firstNameValue = firstName ?? "";
+        const lastNameValue = lastName ?? "";
+
         let mobileNumber = null;
         if (primaryPhoneNumber) {
           mobileNumber = primaryPhoneNumber.phoneNumber;
         }
+
         let profilePhoto = null;
         if (imageUrl) {
           profilePhoto = imageUrl;
@@ -44,8 +49,8 @@ const TabScreen = () => {
 
         const { data } = await createUser({
           variables: {
-            firstName: firstName,
-            lastName: lastName,
+            firstName: firstNameValue,
+            lastName: lastNameValue,
             clerkId: id,
             email: primaryEmailAddress.emailAddress,
             profilePhoto: profilePhoto,
@@ -64,31 +69,30 @@ const TabScreen = () => {
 
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName={RouteNames.HOME_SCREEN}
       screenOptions={{
-        tabBarLabelStyle: { color: "white" },
+        tabBarLabelStyle: { color: COLORS.White },
         tabBarStyle: {
-          // backgroundColor: COLORS.Black,
-          backgroundColor: "#0D1117",
+          backgroundColor: COLORS.TabBackground,
         },
       }}
     >
       <Tab.Screen
-        name="Home"
+        name={RouteNames.HOME_SCREEN}
         component={HomeIndex}
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ focused }) => (
             <AntDesign
               name="home"
-              size={24}
-              color={focused ? "#5E63E9" : "#AEB2E5"}
+              size={FONTSIZE.size_24}
+              color={focused ? COLORS.Primary : COLORS.Secondary}
             />
           ),
         }}
       />
       <Tab.Screen
-        name="CreateEvent"
+        name={RouteNames.CREATE_EVENT_SCREEN}
         component={CreateEventScreen}
         options={{
           // title: "Create"
@@ -96,28 +100,28 @@ const TabScreen = () => {
           tabBarIcon: ({ focused }) => (
             <MaterialIcons
               name="post-add"
-              size={24}
-              color={focused ? "#5E63E9" : "#AEB2E5"}
+              size={FONTSIZE.size_24}
+              color={focused ? COLORS.Primary : COLORS.Secondary}
             />
           ),
         }}
       />
       <Tab.Screen
-        name="Scan"
+        name={RouteNames.SCAN_SCREEN}
         component={ScanIndex}
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ focused }) => (
             <MaterialCommunityIcons
               name="line-scan"
-              size={24}
-              color={focused ? "#5E63E9" : "#AEB2E5"}
+              size={FONTSIZE.size_24}
+              color={focused ? COLORS.Primary : COLORS.Secondary}
             />
           ),
         }}
       />
       <Tab.Screen
-        name="MyProfile"
+        name={RouteNames.PROFILE_SCREEN}
         component={MyProfileScreen}
         options={{
           // title: "Profile"
@@ -125,8 +129,8 @@ const TabScreen = () => {
           tabBarIcon: ({ focused }) => (
             <Feather
               name="user"
-              size={24}
-              color={focused ? "#5E63E9" : "#AEB2E5"}
+              size={FONTSIZE.size_24}
+              color={focused ? COLORS.Primary : COLORS.Secondary}
             />
           ),
         }}

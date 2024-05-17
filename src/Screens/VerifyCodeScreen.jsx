@@ -9,11 +9,13 @@ import {
 import { useClerk, useSignUp } from "@clerk/clerk-expo";
 import { log } from "../../logger";
 import { styles } from "../Theme/Styles";
+import { BORDERRADIUS, COLORS, SPACING } from "../Common/constants";
 
 export default function VerifyCodeScreen({ navigation }) {
   const { isLoaded, signUp, setSession } = useSignUp();
 
   const [code, setCode] = React.useState("");
+  const [serverErrors, setServerErrors] = React.useState([]);
 
   const onPress = async () => {
     if (!isLoaded) {
@@ -26,9 +28,15 @@ export default function VerifyCodeScreen({ navigation }) {
       });
 
       await setSession(completeSignUp.createdSessionId);
+      setServerErrors([]);
     } catch (err) {
       log("Error:> " + err?.status || "");
       log("Error:> " + err?.errors ? JSON.stringify(err.errors) : err);
+      if (err?.errors) {
+        setServerErrors(err.errors.map((error) => error.longMessage));
+      } else {
+        setServerErrors(["Registration failed. Please try again."]);
+      }
     }
   };
 
@@ -39,13 +47,22 @@ export default function VerifyCodeScreen({ navigation }) {
           value={code}
           style={styles.textInput}
           placeholder="OTP"
-          placeholderTextColor="#A9A9A9"
+          placeholderTextColor={COLORS.GreyColor}
           onChangeText={(code) => setCode(code)}
         />
       </View>
       <TouchableOpacity style={newStyle.primaryButton} onPress={onPress}>
         <Text style={styles.primaryButtonText}>Verify Email</Text>
       </TouchableOpacity>
+      {serverErrors.length > 0 && (
+        <View style={styles.errorView}>
+          {serverErrors.map((error, index) => (
+            <Text key={index} style={styles.errorText}>
+              {error}
+            </Text>
+          ))}
+        </View>
+      )}
     </View>
   );
 }
@@ -53,18 +70,18 @@ export default function VerifyCodeScreen({ navigation }) {
 const newStyle = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 15,
+    marginTop: SPACING.space_15,
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: COLORS.White,
   },
   inputView: {
     width: "80%",
-    marginBottom: 20,
+    marginBottom: SPACING.space_20,
   },
   primaryButton: {
-    backgroundColor: "#5E63E9",
-    borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    backgroundColor: COLORS.Primary,
+    borderRadius: BORDERRADIUS.radius_8,
+    paddingVertical: SPACING.space_12,
+    paddingHorizontal: SPACING.space_20,
   },
 });

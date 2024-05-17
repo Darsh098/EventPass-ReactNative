@@ -1,23 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
-  TextInput,
-  Button,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image,
+  Alert,
 } from "react-native";
+import { Button, Input, Avatar, Card, Icon } from "react-native-elements";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useMutation } from "@apollo/client";
 import { CREATE_EVENT, CREATE_EVENT_VISITOR } from "../../GraphQL/Mutations";
 import { useUser } from "@clerk/clerk-expo";
 import UserSearchModal from "../../Components/UserSearchModal";
-import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
 import { firebase } from "../../../config";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
+import { useNavigation } from "@react-navigation/native";
+import {
+  BORDERRADIUS,
+  COLORS,
+  FONTSIZE,
+  RouteNames,
+  SPACING,
+} from "../../Common/constants";
 
 const CreateEventScreen = () => {
   const { user } = useUser();
@@ -35,17 +41,17 @@ const CreateEventScreen = () => {
   const [showDate, setShowDate] = useState(false);
   const [showStartTime, setShowStartTime] = useState(false);
   const [showEndTime, setShowEndTime] = useState(false);
-  const [email, setEmail] = useState("");
   const [visitors, setVisitors] = useState([]);
   const [createEvent] = useMutation(CREATE_EVENT);
   const [createEventVisitor] = useMutation(CREATE_EVENT_VISITOR);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  // To Check Which Are The Visitors Selected
-  // useEffect(() => {
-  //   console.log(visitors);
-  // }, [visitors]);
+  const [nameError, setNameError] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
+  const [venueError, setVenueError] = useState("");
+  const [entriesCountError, setEntriesCountError] = useState("");
+  const navigation = useNavigation();
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -56,48 +62,10 @@ const CreateEventScreen = () => {
     });
 
     if (!result.canceled) {
-      // setImage(result.assets[0].uri);
       setImage(result.assets[0].uri);
       uploadMedia(result.assets[0].uri);
     }
   };
-
-  // const uploadMedia = async () => {
-  //   setUploading(true);
-  //   console.log("Image: " + image);
-  //   try {
-  //     if (!image) {
-  //       console.error("Image URI is null or undefined");
-  //       return;
-  //     }
-
-  //     const { uri } = await FileSystem.getInfoAsync(image);
-  //     const blob = await new Promise((resolve, reject) => {
-  //       const xhr = new XMLHttpRequest();
-  //       xhr.onload = () => {
-  //         resolve(xhr.response);
-  //       };
-  //       xhr.onerror = (e) => {
-  //         reject(new TypeError("Network Request Failed"));
-  //       };
-  //       xhr.responseType = "blob";
-  //       xhr.open("GET", uri, true);
-  //       xhr.send(null);
-  //     });
-
-  //     const filename = image.substring(image.lastIndexOf("/") + 1);
-  //     const ref = firebase.storage().ref().child(filename);
-
-  //     await ref.put(blob);
-  //     const downloadURL = await ref.getDownloadURL();
-  //     setImage(null);
-  //     setPhoto(downloadURL);
-  //     setUploading(false);
-  //   } catch (error) {
-  //     console.error(error);
-  //     setUploading(false);
-  //   }
-  // };
 
   const uploadMedia = async (img) => {
     setUploading(true);
@@ -126,7 +94,63 @@ const CreateEventScreen = () => {
     }
   };
 
+  const validateFields = () => {
+    let valid = true;
+    if (name.length === 0) {
+      setNameError("Event name is required");
+      valid = false;
+    } else if (name.length > 30) {
+      setNameError("Event name cannot exceed 30 characters");
+      valid = false;
+    } else {
+      setNameError("");
+    }
+
+    if (description.length === 0) {
+      setDescriptionError("Description is required");
+      valid = false;
+    } else if (description.length > 150) {
+      setDescriptionError("Description cannot exceed 150 characters");
+      valid = false;
+    } else {
+      setDescriptionError("");
+    }
+
+    if (venue.length === 0) {
+      setVenueError("Venue is required");
+      valid = false;
+    } else if (venue.length > 100) {
+      setVenueError("Venue cannot exceed 100 characters");
+      valid = false;
+    } else {
+      setVenueError("");
+    }
+
+    const entriesCountInt = parseInt(entriesCount, 10);
+    if (isNaN(entriesCountInt) || entriesCountInt < 1 || entriesCountInt > 10) {
+      setEntriesCountError("Entries count must be between 1 and 10");
+      valid = false;
+    } else {
+      setEntriesCountError("");
+    }
+
+    const timeDuration = calculateDurationInMinutes(startTime, endTime);
+    if (timeDuration <= 0) {
+      Alert.alert(
+        "Validation Error",
+        "Please choose an end time later than the start time."
+      );
+      valid = false;
+    }
+
+    return valid;
+  };
+
   const handleCreateEvent = async () => {
+    if (!validateFields()) {
+      return;
+    }
+
     try {
       const timeDuration = calculateDurationInMinutes(startTime, endTime);
       const { data } = await createEvent({
@@ -155,6 +179,7 @@ const CreateEventScreen = () => {
         }
       }
       resetFields();
+      navigation.navigate(RouteNames.PROFILE_SCREEN);
     } catch (error) {
       console.error("Error Registering Event:", error);
     }
@@ -168,11 +193,12 @@ const CreateEventScreen = () => {
     setStartTime(new Date());
     setEndTime(new Date());
     setEntriesCount("");
-    setPhoto("");
+    setPhoto(
+      "https://firebasestorage.googleapis.com/v0/b/eventpass-84cb8.appspot.com/o/futuristic-view-school-classroom-with-state-art-architecture.jpg?alt=media&token=18a6967f-4f3a-4f9d-8b53-c2b03521af91"
+    );
     setShowDate(false);
     setShowStartTime(false);
     setShowEndTime(false);
-    setEmail("");
     setIsModalVisible(false);
     setVisitors([]);
   };
@@ -180,10 +206,7 @@ const CreateEventScreen = () => {
   const calculateDurationInMinutes = (startTime, endTime) => {
     const start = startTime.getHours() * 60 + startTime.getMinutes();
     const end = endTime.getHours() * 60 + endTime.getMinutes();
-
-    const durationInMinutes = end - start;
-
-    return durationInMinutes;
+    return end - start;
   };
 
   const onChangeDate = (event, selectedDate) => {
@@ -195,7 +218,6 @@ const CreateEventScreen = () => {
   const onChangeStartTime = (event, selectedTime) => {
     const currentTime = selectedTime || startTime;
     setShowStartTime(false);
-    // Show The End Time Immediately show it will be shown as effect of choosing time slot
     setShowEndTime(true);
     setStartTime(currentTime);
   };
@@ -210,106 +232,141 @@ const CreateEventScreen = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Create New Event</Text>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Name"
+      <TouchableOpacity onPress={pickImage} style={styles.avatarContainer}>
+        <Avatar
+          size="xlarge"
+          rounded
+          source={{ uri: photo }}
+          icon={{ name: "camera", type: "font-awesome" }}
+          overlayContainerStyle={{ backgroundColor: COLORS.IconBackground }}
+          containerStyle={styles.avatar}
+        />
+      </TouchableOpacity>
+
+      <Card containerStyle={styles.card}>
+        <Input
+          placeholder="Event Name"
           value={name}
           onChangeText={setName}
+          leftIcon={
+            <Icon name="event" size={FONTSIZE.size_24} color={COLORS.Primary} />
+          }
+          errorMessage={nameError}
+          maxLength={30}
         />
-
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="Description"
           value={description}
           onChangeText={setDescription}
+          leftIcon={
+            <Icon
+              name="description"
+              size={FONTSIZE.size_24}
+              color={COLORS.Primary}
+            />
+          }
+          multiline
+          errorMessage={descriptionError}
+          maxLength={150}
         />
-
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="Venue"
           value={venue}
           onChangeText={setVenue}
+          leftIcon={
+            <Icon
+              name="location-on"
+              size={FONTSIZE.size_24}
+              color={COLORS.Primary}
+            />
+          }
+          errorMessage={venueError}
+          maxLength={100}
         />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Number Of Entries"
-          keyboardType="numeric"
-          onChangeText={setEntriesCount}
+        <Input
+          placeholder="Number of Entries"
           value={entriesCount}
-          maxLength={3}
+          onChangeText={setEntriesCount}
+          keyboardType="numeric"
+          leftIcon={
+            <Icon name="group" size={FONTSIZE.size_24} color={COLORS.Primary} />
+          }
+          errorMessage={entriesCountError}
+          maxLength={2}
         />
-      </View>
+      </Card>
 
       <View style={styles.iconContainer}>
-        <TouchableOpacity style={styles.iconButton} onPress={pickImage}>
-          <MaterialIcons name="add-photo-alternate" size={24} color="#5E63E9" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.iconButton}
+        <Icon
+          name="calendar"
+          type="antdesign"
+          color={COLORS.Primary}
+          size={FONTSIZE.size_32}
           onPress={() => setShowDate(true)}
-        >
-          <AntDesign name="calendar" size={24} color="#5E63E9" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.iconButton}
+          containerStyle={styles.icon}
+        />
+        <Icon
+          name="clockcircle"
+          type="antdesign"
+          color={COLORS.Primary}
+          size={FONTSIZE.size_32}
           onPress={() => setShowStartTime(true)}
-        >
-          <Entypo name="time-slot" size={24} color="#5E63E9" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.iconButton}
+          containerStyle={styles.icon}
+        />
+        <Icon
+          name="addusergroup"
+          type="antdesign"
+          color={COLORS.Primary}
+          size={FONTSIZE.size_32}
           onPress={() => setIsModalVisible(true)}
-        >
-          <AntDesign name="addusergroup" size={24} color="#5E63E9" />
-        </TouchableOpacity>
+          containerStyle={styles.icon}
+        />
       </View>
 
       {showDate && (
         <DateTimePicker
           value={date}
-          mode={"date"}
+          mode="date"
           is24Hour={true}
           display="default"
+          minimumDate={new Date()}
           onChange={onChangeDate}
-          style={styles.datePicker}
         />
       )}
 
       {showStartTime && (
         <DateTimePicker
           value={startTime}
-          mode={"time"}
+          mode="time"
           is24Hour={true}
           display="default"
           onChange={onChangeStartTime}
-          style={styles.timePicker}
         />
       )}
 
       {showEndTime && (
         <DateTimePicker
           value={endTime}
-          mode={"time"}
+          mode="time"
           is24Hour={true}
           display="default"
           onChange={onChangeEndTime}
-          style={styles.timePicker}
         />
       )}
 
       <View style={styles.buttonContainer}>
-        <Button title="Create" onPress={handleCreateEvent} />
         <Button
-          title="Cancel"
-          color="#FF6961"
+          title="Create"
+          onPress={handleCreateEvent}
+          buttonStyle={styles.createButton}
+        />
+        <Button
+          title="Clear"
           onPress={resetFields}
-          style={styles.cancelButton}
+          buttonStyle={styles.cancelButton}
         />
       </View>
 
-      {/* User Search Modal */}
       <UserSearchModal
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
@@ -324,48 +381,49 @@ const CreateEventScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 20,
+    paddingVertical: SPACING.space_20,
+    paddingHorizontal: SPACING.space_10,
+    backgroundColor: COLORS.ContainerBackground,
   },
   title: {
-    fontSize: 24,
+    fontSize: FONTSIZE.size_24,
     fontWeight: "bold",
-    marginBottom: 20,
-    color: "#5E63E9",
+    color: COLORS.Primary,
+    marginHorizontal: SPACING.space_20,
+    marginVertical: SPACING.space_10,
   },
-  inputContainer: {
-    marginBottom: 20,
+  avatarContainer: {
+    alignItems: "center",
+    marginBottom: SPACING.space_10,
   },
-  input: {
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#A9A9A9",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
+  avatar: {
+    borderWidth: SPACING.space_2,
+    borderColor: COLORS.Primary,
+  },
+  card: {
+    borderRadius: BORDERRADIUS.radius_10,
+    paddingVertical: SPACING.space_20,
   },
   iconContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginBottom: 20,
+    marginVertical: SPACING.space_20,
   },
-  iconButton: {
-    padding: 10,
-    backgroundColor: "#E8E8E8",
-    borderRadius: 8,
-  },
-  datePicker: {
-    width: "100%",
-  },
-  timePicker: {
-    width: "100%",
+  icon: {
+    padding: SPACING.space_20,
   },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginTop: 20,
+    marginTop: SPACING.space_20,
+  },
+  createButton: {
+    backgroundColor: COLORS.Primary,
+    paddingHorizontal: SPACING.space_20,
   },
   cancelButton: {
-    marginLeft: 10,
+    backgroundColor: COLORS.Red2,
+    paddingHorizontal: SPACING.space_20,
   },
 });
 

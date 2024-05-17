@@ -10,6 +10,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import EventDetail from "./Components/EventDetail";
 import EventVisitorsDetail from "./Components/EventVisitorDetail";
 import EditEventScreen from "./Screens/EditEvent/EditEventScreen";
+import { RouteNames } from "./Common/constants";
 
 const Stack = createNativeStackNavigator();
 
@@ -37,23 +38,23 @@ const RootNavigator = () => {
           {isSignedIn ? (
             <>
               <Stack.Screen
-                name="Tab"
+                name={RouteNames.TAB_SCREEN}
                 component={TabScreen}
                 options={{ title: "EventPass" }}
               />
               <Stack.Screen
-                name="EventDetail"
+                name={RouteNames.EVENT_DETAIL_SCREEN}
                 component={EventDetail}
                 options={{ title: "Event Details" }}
               />
               <Stack.Screen
-                name="EventVisitorsDetail"
+                name={RouteNames.EVENT_VISITOR_DETAIL_SCREEN}
                 component={EventVisitorsDetail}
                 options={{ title: "Event Details" }}
               />
 
               <Stack.Screen
-                name="EditEvent"
+                name={RouteNames.EDIT_EVENT_SCREEN}
                 component={EditEventScreen}
                 options={{ title: "Edit Event" }}
               />
@@ -61,17 +62,17 @@ const RootNavigator = () => {
           ) : (
             <>
               <Stack.Screen
-                name="SignUp"
+                name={RouteNames.SIGNUP_SCREEN}
                 component={SignUpScreen}
                 options={{ title: "Sign Up" }}
               />
               <Stack.Screen
-                name="SignIn"
+                name={RouteNames.SIGNIN_SCREEN}
                 component={SignInScreen}
                 options={{ title: "Sign In" }}
               />
               <Stack.Screen
-                name="VerifyCode"
+                name={RouteNames.VERIFY_CODE_SCREEN}
                 component={VerifyCodeScreen}
                 options={{ title: "Sign Up" }}
               />

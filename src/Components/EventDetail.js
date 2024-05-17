@@ -10,13 +10,7 @@ import {
 import QRCode from "react-native-qrcode-svg";
 import { Entypo } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-
-const COLORS = {
-  primary: "#5E63E9",
-  secondary: "#AEB2E5",
-  background: "#f0f0f0",
-  text: "#333",
-};
+import { BORDERRADIUS, COLORS, FONTSIZE, SPACING } from "../Common/constants";
 
 const EventDetail = ({ route }) => {
   const { eventDetails, visitorId } = route.params;
@@ -40,18 +34,18 @@ const EventDetail = ({ route }) => {
           <QRCode
             value={visitorId.toString()}
             enableLinearGradient={true}
-            linearGradient={[COLORS.primary, COLORS.secondary]}
+            linearGradient={[COLORS.Primary, COLORS.Secondary]}
           />
           {/* <TouchableOpacity
             onPress={handleSaveQRCode}
             style={styles.saveButton}
           >
-            <Entypo name="download" size={24} color={COLORS.primary} />
+            <Entypo name="download" size={24} color={COLORS.Primary} />
             <Text style={styles.saveButtonText}>Save QR Code</Text>
           </TouchableOpacity> */}
         </View>
         <LinearGradient
-          colors={["#D5DBFF", "#EFE9FF"]}
+          colors={[COLORS.Gradient1, COLORS.Gradient2]}
           style={styles.gradientCard}
         >
           <View style={styles.detailRow}>
@@ -73,14 +67,18 @@ const EventDetail = ({ route }) => {
             </Text>
           </View>
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Scans Remaining:</Text>
+            <Text style={styles.detailLabel}>Scans Allowed:</Text>
             <Text style={styles.detailValue}>{eventDetails.entriesCount}</Text>
           </View>
           <View style={styles.detailRow}>
             {/* Render "Event Ended" message with icon and background color */}
             {eventHasEnded && (
               <View style={styles.eventEndedContainer}>
-                <Entypo name="info-with-circle" size={24} color="red" />
+                <Entypo
+                  name="info-with-circle"
+                  size={FONTSIZE.size_24}
+                  color={COLORS.Red}
+                />
                 <Text style={styles.eventEndedText}>Event Ended</Text>
               </View>
             )}
@@ -95,73 +93,73 @@ const EventDetail = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.LightGrey,
   },
   scrollContainer: {
-    paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingHorizontal: SPACING.space_20,
+    paddingTop: SPACING.space_40,
   },
   header: {
-    marginBottom: 20,
+    marginBottom: SPACING.space_20,
   },
   eventName: {
-    fontSize: 24,
+    fontSize: FONTSIZE.size_24,
     fontWeight: "bold",
-    color: COLORS.primary,
+    color: COLORS.Primary,
   },
   organizer: {
-    fontSize: 16,
-    color: COLORS.text,
+    fontSize: FONTSIZE.size_16,
+    color: COLORS.DarkGrey,
   },
   qrCodeContainer: {
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: SPACING.space_20,
   },
   saveButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#E8E8E8",
-    padding: 10,
-    borderRadius: 8,
-    marginTop: 10,
+    backgroundColor: COLORS.IconBackground,
+    padding: SPACING.space_10,
+    borderRadius: BORDERRADIUS.radius_8,
+    marginTop: SPACING.space_10,
   },
   saveButtonText: {
-    marginLeft: 5,
-    color: COLORS.primary,
+    marginLeft: SPACING.space_5,
+    color: COLORS.Primary,
   },
   detailRow: {
     flexDirection: "row",
-    marginBottom: 15,
+    marginBottom: SPACING.space_15,
   },
   detailLabel: {
     width: 150,
     fontWeight: "bold",
-    color: COLORS.primary,
+    color: COLORS.Primary,
   },
   detailValue: {
     flex: 1,
-    color: COLORS.text,
+    color: COLORS.DarkGrey,
   },
   eventEndedContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFCDD2",
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: COLORS.Red3,
+    padding: SPACING.space_10,
+    borderRadius: BORDERRADIUS.radius_8,
   },
   eventEndedText: {
-    marginLeft: 10,
-    color: "red",
+    marginLeft: SPACING.space_10,
+    color: COLORS.Red,
   },
   gradientCard: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    marginBottom: 10,
-    shadowColor: "#000",
+    paddingVertical: SPACING.space_10,
+    paddingHorizontal: SPACING.space_20,
+    borderRadius: BORDERRADIUS.radius_8,
+    marginBottom: SPACING.space_10,
+    shadowColor: COLORS.Black,
     shadowOffset: {
-      width: 0,
-      height: 2,
+      width: SPACING.space_0,
+      height: SPACING.space_2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -170,8 +168,8 @@ const styles = StyleSheet.create({
   eventPhoto: {
     width: "100%",
     height: 200, // Adjust height as needed
-    borderRadius: 8,
-    marginBottom: 20,
+    borderRadius: BORDERRADIUS.radius_8,
+    marginBottom: SPACING.space_20,
   },
 });
 

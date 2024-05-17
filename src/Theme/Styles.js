@@ -1,40 +1,41 @@
 import { StyleSheet } from "react-native";
+import { BORDERRADIUS, COLORS, FONTSIZE, SPACING } from "../Common/constants";
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    paddingHorizontal: 20,
-    backgroundColor: "#FFFFFF",
+    paddingHorizontal: SPACING.space_20,
+    backgroundColor: COLORS.White,
   },
   oauthView: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#5E63E9",
-    marginBottom: 20,
+    borderBottomWidth: SPACING.space_2,
+    borderBottomColor: COLORS.Primary,
+    marginBottom: SPACING.space_20,
   },
   inputView: {
     width: "100%",
-    marginBottom: 20,
+    marginBottom: SPACING.space_20,
   },
   textInput: {
     width: "100%",
-    borderWidth: 1,
-    borderColor: "#A9A9A9",
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    borderWidth: SPACING.space_1,
+    borderColor: COLORS.GreyColor,
+    borderRadius: BORDERRADIUS.radius_8,
+    paddingVertical: SPACING.space_10,
+    paddingHorizontal: SPACING.space_15,
   },
   primaryButton: {
     width: "100%",
-    backgroundColor: "#5E63E9",
-    borderRadius: 8,
-    paddingVertical: 15,
+    backgroundColor: COLORS.Primary,
+    borderRadius: BORDERRADIUS.radius_8,
+    paddingVertical: SPACING.space_15,
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: SPACING.space_10,
   },
   primaryButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
+    color: COLORS.White,
+    fontSize: FONTSIZE.size_16,
     fontWeight: "bold",
   },
   footer: {
@@ -43,16 +44,29 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   secondaryButton: {
-    borderColor: "#5E63E9",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginLeft: 10,
+    borderColor: COLORS.Primary,
+    borderWidth: SPACING.space_1,
+    borderRadius: BORDERRADIUS.radius_8,
+    paddingVertical: SPACING.space_10,
+    paddingHorizontal: SPACING.space_20,
+    marginLeft: SPACING.space_10,
   },
   secondaryButtonText: {
-    color: "#5E63E9",
-    fontSize: 16,
+    color: COLORS.Primary,
+    fontSize: FONTSIZE.size_16,
     fontWeight: "bold",
+  },
+  footer: {
+    flexDirection: "row",
+    marginTop: SPACING.space_20,
+    alignItems: "center",
+  },
+  errorText: {
+    color: COLORS.Red,
+    fontSize: FONTSIZE.size_14,
+    marginTop: SPACING.space_5,
+  },
+  errorView: {
+    marginTop: SPACING.space_10,
   },
 });

@@ -1,22 +1,79 @@
-
-
 export const RouteNames = Object.freeze({
-  SIGNIN_SCREEN: "[App]Signin",
-  SIGNUP_SCREEN: "[App]Signup",
+  SIGNIN_SCREEN: "SignIn",
+  SIGNUP_SCREEN: "SignUp",
+  VERIFY_CODE_SCREEN: "VerifyCode",
+  TAB_SCREEN: "Tab",
+  HOME_SCREEN: "Home",
+  CREATE_EVENT_SCREEN: "CreateEvent",
+  SCAN_SCREEN: "Scan",
+  PROFILE_SCREEN: "MyProfile",
+  EVENT_DETAIL_SCREEN: "EventDetail",
+  EVENT_VISITOR_DETAIL_SCREEN: "EventVisitorsDetail",
+  EDIT_EVENT_SCREEN: "EditEvent",
 });
 
-
-export const SCREEN_OPTIONS_COLOR = {
-  ALLMEMBER_BG: "#EAA250",
-  MANAGE_NEWS_BG: "#3448FF",
-  MANAGE_REQUESTS_BG: "#FF3972",
-  MANAGE_GALLERY_BG: "#5B6EA2",
-  VILLAGE_OFFICIALS_BG: "#9DCB90",
-  SARPANCH_MESSAGES_BG: "#DD7F66",
-  MANAGE_VILLAGE: "#9DCBCC",
-  LIVE: "#FF0000",
-  BLUE: "#80c5ec",
-  MEETING: "#d180c2",
+export const COLORS = {
+  Primary: "#5E63E9",
+  Secondary: "#AEB2E5",
+  PrimaryAlpha: "rgba(94, 99, 233, 0.2)",
+  Red: "red",
+  Red2: "#FF6961",
+  Red3: "#FFCDD2",
+  IconBackground: "#E8E8E8",
+  TabBackground: "#0D1117",
+  ContainerBackground: "#f8f8f8",
+  LightGrey: "#f0f0f0",
+  LightGrey2: "#ccc",
+  GreyColor: "#A9A9A9",
+  MediumGrey: "#666",
+  DarkGrey: "#333",
+  Gradient1: "#D5DBFF",
+  Gradient2: "#EFE9FF",
+  White: "#FFFFFF",
+  Black: "#000",
 };
 
+export const SPACING = {
+  space_0: 0,
+  space_1: 1,
+  space_2: 2,
+  space_4: 4,
+  space_5: 5,
+  space_8: 8,
+  space_10: 10,
+  space_12: 12,
+  space_15: 15,
+  space_16: 16,
+  space_18: 18,
+  space_20: 20,
+  space_24: 24,
+  space_28: 28,
+  space_30: 30,
+  space_32: 32,
+  space_36: 36,
+  space_40: 40,
+};
 
+export const FONTSIZE = {
+  size_8: 8,
+  size_10: 10,
+  size_12: 12,
+  size_14: 14,
+  size_16: 16,
+  size_18: 18,
+  size_20: 20,
+  size_24: 24,
+  size_30: 30,
+  size_32: 32,
+};
+
+export const BORDERRADIUS = {
+  radius_4: 4,
+  radius_5: 5,
+  radius_8: 8,
+  radius_10: 10,
+  radius_14: 14,
+  radius_15: 15,
+  radius_20: 20,
+  radius_25: 25,
+};

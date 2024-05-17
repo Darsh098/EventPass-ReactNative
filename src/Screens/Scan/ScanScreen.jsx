@@ -14,6 +14,12 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { GET_EVENT_VISITOR_BY_ID } from "../../GraphQL/Queries";
 import { UPDATE_EVENT_VISITOR } from "../../GraphQL/Mutations";
 import { useLazyQuery, useMutation } from "@apollo/client";
+import {
+  BORDERRADIUS,
+  COLORS,
+  FONTSIZE,
+  SPACING,
+} from "../../Common/constants";
 
 export default ScanScreen = () => {
   const [hasPermission, setHasPermission] = useState(false);
@@ -80,10 +86,10 @@ export default ScanScreen = () => {
             onBarCodeScanned={scanData ? undefined : handleBarCodeScanned}
           >
             <BarcodeMask
-              edgeColor="#5E63E9"
-              animatedLineColor="#5E63E9"
-              edgeRadius={14}
-              edgeBorderWidth={8}
+              edgeColor={COLORS.Primary}
+              animatedLineColor={COLORS.Primary}
+              edgeRadius={BORDERRADIUS.radius_14}
+              edgeBorderWidth={SPACING.space_8}
               width={250}
               height={250}
               lineAnimationDuration={1000}
@@ -92,8 +98,8 @@ export default ScanScreen = () => {
             <View style={styles.iconContainer}>
               <AntDesign
                 name="close"
-                size={24}
-                color="#5E63E9"
+                size={FONTSIZE.size_24}
+                color={COLORS.Primary}
                 onPress={() => setOpenScanner(false)}
               />
             </View>
@@ -103,7 +109,7 @@ export default ScanScreen = () => {
         <>
           <View style={styles.contentContainer}>
             {loading ? (
-              <ActivityIndicator size="large" color="#0000ff" />
+              <ActivityIndicator size="large" color={COLORS.Primary} />
             ) : scanMaximised ? (
               <Text style={styles.errorText}>{scanData}</Text>
             ) : (
@@ -135,8 +141,8 @@ export default ScanScreen = () => {
           <View style={styles.iconContainer}>
             <MaterialCommunityIcons
               name="qrcode-scan"
-              size={24}
-              color="#5E63E9"
+              size={FONTSIZE.size_24}
+              color={COLORS.Primary}
               onPress={() => {
                 setScanData("");
                 setScanMaximised(false);
@@ -154,39 +160,39 @@ export default ScanScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: COLORS.LightGrey,
   },
   title: {
-    fontSize: 24,
+    fontSize: FONTSIZE.size_24,
     fontWeight: "bold",
-    color: "#5E63E9",
+    color: COLORS.Primary,
   },
   contentContainer: {
-    padding: 20,
-    margin: 10,
-    backgroundColor: "#ffffff",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
+    padding: SPACING.space_20,
+    margin: SPACING.space_10,
+    backgroundColor: COLORS.White,
+    borderRadius: BORDERRADIUS.radius_10,
+    borderWidth: SPACING.space_1,
+    borderColor: COLORS.LightGrey2,
     width: "94%",
   },
   scanData: {
-    fontSize: 20,
-    marginBottom: 20,
-    color: "#5E63E9",
+    fontSize: FONTSIZE.size_20,
+    marginBottom: SPACING.space_20,
+    color: COLORS.Primary,
   },
   errorText: {
-    fontSize: 20,
-    marginBottom: 20,
-    color: "red",
+    fontSize: FONTSIZE.size_20,
+    marginBottom: SPACING.space_20,
+    color: COLORS.Red,
   },
   iconContainer: {
     position: "absolute",
-    bottom: 40,
-    right: 40,
+    bottom: SPACING.space_40,
+    right: SPACING.space_40,
     zIndex: 1,
-    backgroundColor: "#E8E8E8",
-    borderRadius: 8,
-    padding: 10,
+    backgroundColor: COLORS.IconBackground,
+    borderRadius: BORDERRADIUS.radius_8,
+    padding: SPACING.space_10,
   },
 });

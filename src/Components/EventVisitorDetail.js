@@ -6,27 +6,46 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  Alert,
 } from "react-native";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { DELETE_EVENT } from "../GraphQL/Mutations";
 import { useMutation } from "@apollo/client";
-
-const COLORS = {
-  primary: "#5E63E9",
-  text: "#333",
-  background: "#f0f0f0",
-  danger: "#FF6961",
-};
+import {
+  BORDERRADIUS,
+  COLORS,
+  FONTSIZE,
+  RouteNames,
+  SPACING,
+} from "../Common/constants";
 
 const EventVisitorsDetail = ({ route }) => {
   const { eventDetails } = route.params;
   const [deleteEvent] = useMutation(DELETE_EVENT);
   const navigation = useNavigation();
 
+  const confirmDeleteEvent = () => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this event?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "OK", onPress: () => handleDeleteEvent() },
+      ],
+      { cancelable: false }
+    );
+  };
+
   const handleEditEvent = () => {
-    navigation.navigate("EditEvent", { eventDetails: eventDetails });
+    navigation.navigate(RouteNames.EDIT_EVENT_SCREEN, {
+      eventDetails: eventDetails,
+    });
   };
   const handleDeleteEvent = async () => {
     await deleteEvent({
@@ -34,7 +53,7 @@ const EventVisitorsDetail = ({ route }) => {
         id: eventDetails.id,
       },
     });
-    navigation.navigate("MyProfile");
+    navigation.navigate(RouteNames.PROFILE_SCREEN);
   };
 
   return (
@@ -50,19 +69,27 @@ const EventVisitorsDetail = ({ route }) => {
         <View style={styles.iconsContainer}>
           <TouchableOpacity onPress={handleEditEvent}>
             <View style={styles.iconButton}>
-              <Entypo name="edit" size={24} color={COLORS.primary} />
+              <Entypo
+                name="edit"
+                size={FONTSIZE.size_24}
+                color={COLORS.Primary}
+              />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleDeleteEvent}>
+          <TouchableOpacity onPress={confirmDeleteEvent}>
             <View style={styles.iconButton}>
-              <MaterialIcons name="delete" size={24} color={COLORS.danger} />
+              <MaterialIcons
+                name="delete"
+                size={FONTSIZE.size_24}
+                color={COLORS.Red2}
+              />
             </View>
           </TouchableOpacity>
         </View>
       </View>
       <Image source={{ uri: eventDetails.photo }} style={styles.eventPhoto} />
       <LinearGradient
-        colors={["#D5DBFF", "#EFE9FF"]}
+        colors={[COLORS.Gradient1, COLORS.Gradient2]}
         style={styles.gradientCard}
       >
         <View style={styles.detailRow}>
@@ -88,7 +115,11 @@ const EventVisitorsDetail = ({ route }) => {
       {eventDetails.isExpired && (
         <View style={styles.detailRow}>
           <View style={styles.eventEndedContainer}>
-            <Entypo name="info-with-circle" size={24} color="red" />
+            <Entypo
+              name="info-with-circle"
+              size={FONTSIZE.size_24}
+              color={COLORS.Red}
+            />
             <Text style={styles.eventEndedText}>Event Ended</Text>
           </View>
         </View>
@@ -100,7 +131,7 @@ const EventVisitorsDetail = ({ route }) => {
         {eventDetails.eventVisitors.map((visitor, index) => (
           <LinearGradient
             key={index}
-            colors={["#D5DBFF", "#EFE9FF"]}
+            colors={[COLORS.Gradient1, COLORS.Gradient2]}
             style={[
               styles.gradientCard,
               { flexDirection: "row", alignItems: "center" },
@@ -123,105 +154,105 @@ const EventVisitorsDetail = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: COLORS.background,
-    paddingHorizontal: 20,
-    paddingTop: 40,
-    paddingBottom: 20,
+    backgroundColor: COLORS.LightGrey,
+    paddingHorizontal: SPACING.space_20,
+    paddingTop: SPACING.space_40,
+    paddingBottom: SPACING.space_20,
   },
   headerContainer: {
-    marginBottom: 20,
+    marginBottom: SPACING.space_20,
   },
   iconsContainer: {
     flexDirection: "row",
-    marginTop: 10,
+    marginTop: SPACING.space_10,
   },
   iconButton: {
-    backgroundColor: "#E8E8E8",
-    borderRadius: 8,
-    padding: 10,
-    marginRight: 10,
+    backgroundColor: COLORS.IconBackground,
+    borderRadius: BORDERRADIUS.radius_8,
+    padding: SPACING.space_10,
+    marginRight: SPACING.space_10,
   },
   header: {
-    marginBottom: 20,
+    marginBottom: SPACING.space_20,
   },
   editIcon: {
-    backgroundColor: "#E8E8E8",
+    backgroundColor: COLORS.IconBackground,
     borderRadius: 8,
-    padding: 10,
+    padding: SPACING.space_10,
   },
   eventName: {
-    fontSize: 24,
+    fontSize: FONTSIZE.size_24,
     fontWeight: "bold",
-    color: COLORS.primary,
-    marginBottom: 10,
+    color: COLORS.Primary,
+    marginBottom: SPACING.space_10,
   },
   organizer: {
-    fontSize: 16,
-    color: COLORS.text,
+    fontSize: FONTSIZE.size_16,
+    color: COLORS.DarkGrey,
   },
   eventPhoto: {
     width: "100%",
     height: 200,
-    borderRadius: 8,
-    marginBottom: 20,
+    borderRadius: BORDERRADIUS.radius_8,
+    marginBottom: SPACING.space_20,
   },
   detailRow: {
     flexDirection: "row",
-    marginBottom: 15,
+    marginBottom: SPACING.space_15,
   },
   detailLabel: {
     width: 150,
     fontWeight: "bold",
-    color: COLORS.primary,
+    color: COLORS.Primary,
   },
   detailValue: {
     flex: 1,
-    color: COLORS.text,
+    color: COLORS.DarkGrey,
   },
   visitorsContainer: {
-    marginTop: 20,
+    marginTop: SPACING.space_20,
   },
   visitorsTitle: {
-    fontSize: 20,
+    fontSize: SPACING.space_20,
     fontWeight: "bold",
-    marginBottom: 10,
-    color: COLORS.primary,
+    marginBottom: SPACING.space_10,
+    color: COLORS.Primary,
   },
   visitorPhoto: {
-    width: 28,
-    height: 28,
-    borderRadius: 20,
-    marginRight: 10,
+    width: SPACING.space_28,
+    height: SPACING.space_28,
+    borderRadius: BORDERRADIUS.radius_20,
+    marginRight: SPACING.space_10,
   },
   gradientCard: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    marginBottom: 10,
-    shadowColor: "#000",
+    paddingVertical: SPACING.space_10,
+    paddingHorizontal: SPACING.space_20,
+    borderRadius: BORDERRADIUS.radius_8,
+    marginBottom: SPACING.space_10,
+    shadowColor: COLORS.Black,
     shadowOffset: {
-      width: 0,
-      height: 2,
+      width: SPACING.space_0,
+      height: SPACING.space_2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
   },
   visitorName: {
-    fontSize: 16,
-    color: COLORS.primary,
+    fontSize: FONTSIZE.size_16,
+    color: COLORS.Primary,
   },
   eventEndedContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFCDD2",
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 10,
+    backgroundColor: COLORS.Red3,
+    padding: SPACING.space_10,
+    borderRadius: BORDERRADIUS.radius_8,
+    marginBottom: SPACING.space_10,
   },
   eventEndedText: {
-    marginLeft: 10,
-    color: "red",
+    marginLeft: SPACING.space_10,
+    color: COLORS.Red,
   },
 });
 

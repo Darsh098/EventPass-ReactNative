@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ClerkProvider } from "@clerk/clerk-expo";
 import MainRoute from "./src/MainRoute";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import { tokenCache } from "./cache";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,7 +16,7 @@ export default function App() {
   LogBox.ignoreAllLogs();
   const clerk_key = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
   return (
-    <ClerkProvider publishableKey={clerk_key}>
+    <ClerkProvider tokenCache={tokenCache} publishableKey={clerk_key}>
       <ApolloProvider client={client}>
         <MainRoute />
       </ApolloProvider>

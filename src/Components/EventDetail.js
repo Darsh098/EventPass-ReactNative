@@ -1,19 +1,12 @@
 import React from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from "react-native";
+import { Text, View, StyleSheet, Image, ScrollView } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { Entypo } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { BORDERRADIUS, COLORS, FONTSIZE, SPACING } from "../Common/constants";
 
 const EventDetail = ({ route }) => {
-  const { eventDetails, visitorId } = route.params;
+  const { eventDetails, visitorId, scanned } = route.params;
 
   // Functionality To Save The QR Code To Gallery
   // const handleSaveQRCode = async () => {};
@@ -67,8 +60,14 @@ const EventDetail = ({ route }) => {
             </Text>
           </View>
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Scans Allowed:</Text>
+            <Text style={styles.detailLabel}>Max Scans Allowed:</Text>
             <Text style={styles.detailValue}>{eventDetails.entriesCount}</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Scans Remaining:</Text>
+            <Text style={styles.detailValue}>
+              {eventDetails.entriesCount - scanned}
+            </Text>
           </View>
           <View style={styles.detailRow}>
             {/* Render "Event Ended" message with icon and background color */}

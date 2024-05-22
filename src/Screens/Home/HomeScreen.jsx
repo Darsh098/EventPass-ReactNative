@@ -8,7 +8,6 @@ import {
   Image,
 } from "react-native";
 import { useMutation, useQuery } from "@apollo/client";
-import QRCode from "react-native-qrcode-svg";
 import { GET_EVENT_VISITOR_BY_USER_CLERK_ID } from "../../GraphQL/Queries";
 import { useUser } from "@clerk/clerk-expo";
 import { UPDATE_EVENT_EXPIRED_STATUS } from "../../GraphQL/Mutations";
@@ -89,10 +88,11 @@ const HomeScreen = ({ navigation }) => {
     }
   }, [data]);
 
-  const handlePress = (eventDetails, visitorId) => {
+  const handlePress = (eventDetails, visitorId, scanned) => {
     navigation.navigate(RouteNames.EVENT_DETAIL_SCREEN, {
       eventDetails,
       visitorId,
+      scanned,
     });
   };
 
@@ -107,7 +107,7 @@ const HomeScreen = ({ navigation }) => {
       <TouchableOpacity
         key={visitor.id}
         style={styles.invitationContainer}
-        onPress={() => handlePress(visitor.events, visitor.id)}
+        onPress={() => handlePress(visitor.events, visitor.id, visitor.scanned)}
       >
         <View style={styles.detailsContainer}>
           <Text style={styles.eventName}>{visitor.events.name}</Text>

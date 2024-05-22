@@ -267,6 +267,7 @@ export const GET_EVENT_VISITOR_BY_USER_CLERK_ID = gql`
   query GetEventVisitorByUserClerkId($clerkId: String!) {
     getEventVisitorByUserClerkId(clerkId: $clerkId) {
       id
+      scanned
       events {
         id
         name

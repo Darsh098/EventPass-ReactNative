@@ -1,5 +1,5 @@
 module.exports = {
-  name: "event-pass",
+  name: "EventPass",
   scheme: "event-pass",
   version: "1.0.0",
   extra: {
@@ -7,6 +7,12 @@ module.exports = {
     eas: {
       projectId: "a1f863f6-77a1-4f31-a2ff-2456f84f6edb",
     },
+  },
+  icon: "./assets/icon-2.png",
+  splash: {
+    image: "./assets/splash.png",
+    resizeMode: "contain",
+    backgroundColor: "#ffffff",
   },
   android: {
     package: "com.example.eventpass",

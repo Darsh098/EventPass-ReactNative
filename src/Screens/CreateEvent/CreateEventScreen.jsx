@@ -6,16 +6,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-  ActivityIndicator,
 } from "react-native";
-import {
-  Button,
-  Input,
-  Avatar,
-  Card,
-  Icon,
-  Overlay,
-} from "react-native-elements";
+import { Button, Input, Avatar, Card, Icon } from "react-native-elements";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useMutation } from "@apollo/client";
 import { CREATE_EVENT, CREATE_EVENT_VISITOR } from "../../GraphQL/Mutations";

@@ -14,6 +14,7 @@ export const RouteNames = Object.freeze({
 
 export const COLORS = {
   Primary: "#5E63E9",
+  // Primary: "#3EB489",
   Secondary: "#AEB2E5",
   PrimaryAlpha: "rgba(94, 99, 233, 0.2)",
   Red: "red",
@@ -21,7 +22,6 @@ export const COLORS = {
   Red3: "#FFCDD2",
   IconBackground: "#E8E8E8",
   TabBackground: "#0D1117",
-  ContainerBackground: "#f8f8f8",
   LightGrey: "#f0f0f0",
   LightGrey2: "#ccc",
   GreyColor: "#A9A9A9",
@@ -31,6 +31,7 @@ export const COLORS = {
   Gradient2: "#EFE9FF",
   White: "#FFFFFF",
   Black: "#000",
+  BlackAlpha: "rgba(0, 0, 0, 0.5)",
 };
 
 export const SPACING = {

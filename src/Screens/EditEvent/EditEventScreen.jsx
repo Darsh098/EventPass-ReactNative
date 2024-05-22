@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: SPACING.space_20,
     paddingHorizontal: SPACING.space_10,
-    backgroundColor: COLORS.ContainerBackground,
+    backgroundColor: COLORS.LightGrey,
   },
   title: {
     fontSize: FONTSIZE.size_24,

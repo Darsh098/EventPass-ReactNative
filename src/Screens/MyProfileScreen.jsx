@@ -1,5 +1,12 @@
 import * as React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useQuery } from "@apollo/client";
 import { GET_EVENTS_BY_ORGANIZER_CLERK_ID } from "../GraphQL/Queries";
 import { SignedIn, SignedOut, useAuth, useUser } from "@clerk/clerk-expo";
@@ -57,6 +64,25 @@ function MyProfileScreen({ navigation }) {
 
   const [sessionToken, setSessionToken] = React.useState("");
 
+  const confirmSignOut = () => {
+    Alert.alert(
+      "Confirm Signout",
+      "Are you sure you want to sign out?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => onSignOutPress(),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   const onSignOutPress = async () => {
     try {
       await signOut();
@@ -94,7 +120,7 @@ function MyProfileScreen({ navigation }) {
             </Text>
           </View>
         </View>
-        <TouchableOpacity onPress={onSignOutPress} style={styles.signOutButton}>
+        <TouchableOpacity onPress={confirmSignOut} style={styles.signOutButton}>
           {/* <Text style={styles.signOutButtonText}>Sign out</Text> */}
           <Entypo
             name="log-out"
@@ -114,30 +140,28 @@ function MyProfileScreen({ navigation }) {
         <View style={styles.eventList}>
           {data.getEventsByOrganizerClerkId.length > 0 ? (
             data.getEventsByOrganizerClerkId.map((event) => (
-              <View key={event.id} style={styles.eventContainer}>
+              <TouchableOpacity
+                key={event.id}
+                style={styles.eventContainer}
+                onPress={() =>
+                  navigation.navigate(RouteNames.EVENT_VISITOR_DETAIL_SCREEN, {
+                    eventDetails: event,
+                  })
+                }
+              >
                 <View style={styles.eventDetails}>
                   <Text style={styles.eventName}>{event.name}</Text>
                   <Text>Date: {event.eventDate}</Text>
                   <Text>Venue: {event.venue}</Text>
                 </View>
-                <TouchableOpacity
-                  style={styles.rightIconContainer}
-                  onPress={() =>
-                    navigation.navigate(
-                      RouteNames.EVENT_VISITOR_DETAIL_SCREEN,
-                      {
-                        eventDetails: event,
-                      }
-                    )
-                  }
-                >
+                <View style={styles.rightIconContainer}>
                   <AntDesign
                     name="right"
                     size={FONTSIZE.size_24}
                     color={COLORS.Primary}
                   />
-                </TouchableOpacity>
-              </View>
+                </View>
+              </TouchableOpacity>
             ))
           ) : (
             <Text>No events created</Text>
@@ -220,6 +244,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.space_5,
   },
   rightIconContainer: {
+    marginLeft: SPACING.space_15,
     justifyContent: "center",
   },
 });

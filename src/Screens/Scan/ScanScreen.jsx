@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  ActivityIndicator,
-} from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import BarcodeMask from "react-native-barcode-mask";
@@ -47,9 +41,6 @@ export default ScanScreen = () => {
   }
 
   const handleBarCodeScanned = async ({ type, data: scannedData }) => {
-    // setScanData(data);
-    // setOpenScanner(false);
-    // getEventVisitor({ variables: { id: parseInt(data) } });
     setScanData(scannedData);
     setOpenScanner(false);
     const { data: eventData } = await getEventVisitor({
@@ -124,13 +115,23 @@ export default ScanScreen = () => {
                       {data.getEventVisitorById.events.organizer.firstName}
                     </Text>
                     <Text style={styles.scanData}>
+                      Date:
+                      {data.getEventVisitorById.events.eventDate}
+                    </Text>
+                    <Text style={styles.scanData}>
+                      Time:
+                      {data.getEventVisitorById.events.startTime} -
+                      {data.getEventVisitorById.events.endTime}
+                    </Text>
+                    <Text style={styles.scanData}>
                       Visitor: {data.getEventVisitorById.visitor.firstName}
                     </Text>
                     {/* Render other details here */}
                   </>
                 ) : error ? (
                   <Text style={styles.errorText}>
-                    {error.graphQLErrors[0]?.message || "Invalid QR"}
+                    {"Invalid QR"}
+                    {/* {error.graphQLErrors[0]?.message || "Invalid QR"} */}
                   </Text>
                 ) : (
                   <Text style={styles.title}>Scan The QR</Text>

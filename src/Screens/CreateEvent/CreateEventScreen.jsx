@@ -59,7 +59,7 @@ const CreateEventScreen = () => {
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
+      allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
@@ -195,6 +195,25 @@ const CreateEventScreen = () => {
     }
   };
 
+  const confirmClearEvent = () => {
+    Alert.alert(
+      "Confirm Clear",
+      "Are you sure you want to clear this event?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => resetFields(),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   const resetFields = () => {
     setName("");
     setDescription("");
@@ -211,6 +230,10 @@ const CreateEventScreen = () => {
     setShowEndTime(false);
     setIsModalVisible(false);
     setVisitors([]);
+    setNameError("");
+    setDescriptionError("");
+    setVenueError("");
+    setEntriesCountError("");
   };
 
   const calculateDurationInMinutes = (startTime, endTime) => {
@@ -422,7 +445,7 @@ const CreateEventScreen = () => {
           />
           <Button
             title="Clear"
-            onPress={resetFields}
+            onPress={confirmClearEvent}
             buttonStyle={styles.cancelButton}
           />
         </View>

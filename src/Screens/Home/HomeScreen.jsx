@@ -183,7 +183,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.White,
   },
   detailsContainer: {
-    flexDirection: "column",
+    flex: 1,
+    marginRight: SPACING.space_10,
   },
   eventName: {
     fontSize: FONTSIZE.size_20,

@@ -70,9 +70,9 @@ export default function VerifyCodeScreen({ navigation }) {
 const newStyle = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: SPACING.space_15,
+    paddingTop: SPACING.space_15,
     alignItems: "center",
-    backgroundColor: COLORS.White,
+    backgroundColor: COLORS.LightGrey,
   },
   inputView: {
     width: "80%",

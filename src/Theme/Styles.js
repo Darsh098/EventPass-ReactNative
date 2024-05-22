@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     paddingHorizontal: SPACING.space_20,
-    backgroundColor: COLORS.White,
+    backgroundColor: COLORS.LightGrey,
   },
   oauthView: {
     borderBottomWidth: SPACING.space_2,

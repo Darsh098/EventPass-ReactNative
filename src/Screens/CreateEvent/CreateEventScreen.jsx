@@ -24,6 +24,7 @@ import {
   RouteNames,
   SPACING,
 } from "../../Common/constants";
+import Loader from "../../Components/Loader";
 
 const CreateEventScreen = () => {
   const { user } = useUser();
@@ -37,20 +38,22 @@ const CreateEventScreen = () => {
   const [photo, setPhoto] = useState(
     "https://firebasestorage.googleapis.com/v0/b/eventpass-84cb8.appspot.com/o/futuristic-view-school-classroom-with-state-art-architecture.jpg?alt=media&token=18a6967f-4f3a-4f9d-8b53-c2b03521af91"
   );
+  const [createEvent] = useMutation(CREATE_EVENT);
+  const [createEventVisitor] = useMutation(CREATE_EVENT_VISITOR);
+
   const [image, setImage] = useState(null);
   const [showDate, setShowDate] = useState(false);
   const [showStartTime, setShowStartTime] = useState(false);
   const [showEndTime, setShowEndTime] = useState(false);
   const [visitors, setVisitors] = useState([]);
-  const [createEvent] = useMutation(CREATE_EVENT);
-  const [createEventVisitor] = useMutation(CREATE_EVENT_VISITOR);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [uploading, setUploading] = useState(false);
-
   const [nameError, setNameError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [venueError, setVenueError] = useState("");
   const [entriesCountError, setEntriesCountError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const navigation = useNavigation();
 
   const pickImage = async () => {
@@ -69,10 +72,12 @@ const CreateEventScreen = () => {
 
   const uploadMedia = async (img) => {
     setUploading(true);
+    setLoading(true);
     try {
       if (!img) {
         console.error("Image URI is null or undefined");
         setUploading(false);
+        setLoading(false);
         return;
       }
 
@@ -87,10 +92,11 @@ const CreateEventScreen = () => {
       const downloadURL = await ref.getDownloadURL();
       setImage(null);
       setPhoto(downloadURL);
-      setUploading(false);
     } catch (error) {
       console.error(error);
+    } finally {
       setUploading(false);
+      setLoading(false);
     }
   };
 
@@ -151,6 +157,8 @@ const CreateEventScreen = () => {
       return;
     }
 
+    setLoading(true);
+
     try {
       const timeDuration = calculateDurationInMinutes(startTime, endTime);
       const { data } = await createEvent({
@@ -182,6 +190,8 @@ const CreateEventScreen = () => {
       navigation.navigate(RouteNames.PROFILE_SCREEN);
     } catch (error) {
       console.error("Error Registering Event:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -218,7 +228,7 @@ const CreateEventScreen = () => {
   const onChangeStartTime = (event, selectedTime) => {
     const currentTime = selectedTime || startTime;
     setShowStartTime(false);
-    setShowEndTime(true);
+    // setShowEndTime(true);
     setStartTime(currentTime);
   };
 
@@ -229,152 +239,203 @@ const CreateEventScreen = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Create New Event</Text>
+    <>
+      {loading && <Loader />}
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Create New Event</Text>
 
-      <TouchableOpacity onPress={pickImage} style={styles.avatarContainer}>
-        <Avatar
-          size="xlarge"
-          rounded
-          source={{ uri: photo }}
-          icon={{ name: "camera", type: "font-awesome" }}
-          overlayContainerStyle={{ backgroundColor: COLORS.IconBackground }}
-          containerStyle={styles.avatar}
-        />
-      </TouchableOpacity>
+        <TouchableOpacity onPress={pickImage} style={styles.avatarContainer}>
+          <Avatar
+            size="xlarge"
+            source={{ uri: photo }}
+            icon={{ name: "camera", type: "font-awesome" }}
+            overlayContainerStyle={styles.avatar}
+          />
+        </TouchableOpacity>
 
-      <Card containerStyle={styles.card}>
-        <Input
-          placeholder="Event Name"
-          value={name}
-          onChangeText={setName}
-          leftIcon={
-            <Icon name="event" size={FONTSIZE.size_24} color={COLORS.Primary} />
-          }
-          errorMessage={nameError}
-          maxLength={30}
-        />
-        <Input
-          placeholder="Description"
-          value={description}
-          onChangeText={setDescription}
-          leftIcon={
-            <Icon
-              name="description"
-              size={FONTSIZE.size_24}
-              color={COLORS.Primary}
+        <Card containerStyle={styles.card}>
+          <Input
+            placeholder="Event Name"
+            value={name}
+            onChangeText={setName}
+            leftIcon={
+              <Icon
+                name="event"
+                size={FONTSIZE.size_24}
+                color={COLORS.Primary}
+              />
+            }
+            errorMessage={nameError}
+            maxLength={30}
+          />
+          <Input
+            placeholder="Description"
+            value={description}
+            onChangeText={setDescription}
+            leftIcon={
+              <Icon
+                name="description"
+                size={FONTSIZE.size_24}
+                color={COLORS.Primary}
+              />
+            }
+            multiline
+            errorMessage={descriptionError}
+            maxLength={150}
+          />
+          <Input
+            placeholder="Venue"
+            value={venue}
+            onChangeText={setVenue}
+            leftIcon={
+              <Icon
+                name="location-on"
+                size={FONTSIZE.size_24}
+                color={COLORS.Primary}
+              />
+            }
+            errorMessage={venueError}
+            maxLength={100}
+          />
+          <Input
+            placeholder="Number of Entries"
+            value={entriesCount}
+            onChangeText={setEntriesCount}
+            keyboardType="numeric"
+            leftIcon={
+              <Icon
+                name="group"
+                size={FONTSIZE.size_24}
+                color={COLORS.Primary}
+              />
+            }
+            errorMessage={entriesCountError}
+            maxLength={2}
+          />
+          <TouchableOpacity onPress={() => setShowDate(true)}>
+            <Input
+              placeholder="Event Date"
+              value={date.toLocaleDateString()}
+              editable={false}
+              leftIcon={
+                <Icon
+                  name="calendar-month"
+                  type="material-community"
+                  size={FONTSIZE.size_24}
+                  color={COLORS.Primary}
+                />
+              }
             />
-          }
-          multiline
-          errorMessage={descriptionError}
-          maxLength={150}
-        />
-        <Input
-          placeholder="Venue"
-          value={venue}
-          onChangeText={setVenue}
-          leftIcon={
-            <Icon
-              name="location-on"
-              size={FONTSIZE.size_24}
-              color={COLORS.Primary}
+          </TouchableOpacity>
+          <View style={styles.timeContainer}>
+            <TouchableOpacity
+              onPress={() => setShowStartTime(true)}
+              style={styles.timeInput}
+            >
+              <Input
+                placeholder="Start Time"
+                value={startTime.toLocaleTimeString()}
+                editable={false}
+                leftIcon={
+                  <Icon
+                    name="timer"
+                    type="material-community"
+                    size={FONTSIZE.size_24}
+                    color={COLORS.Primary}
+                  />
+                }
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setShowEndTime(true)}
+              style={styles.timeInput}
+            >
+              <Input
+                placeholder="End Time"
+                value={endTime.toLocaleTimeString()}
+                editable={false}
+                leftIcon={
+                  <Icon
+                    name="timer-off"
+                    type="material-community"
+                    size={FONTSIZE.size_24}
+                    color={COLORS.Primary}
+                  />
+                }
+              />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+            <Input
+              placeholder="Add Visitors"
+              value={`${visitors.length} invited`}
+              editable={false}
+              leftIcon={
+                <Icon
+                  name="account-multiple-plus"
+                  type="material-community"
+                  color={COLORS.Primary}
+                  size={FONTSIZE.size_24}
+                />
+              }
+              inputStyle={styles.visitorInput}
             />
-          }
-          errorMessage={venueError}
-          maxLength={100}
-        />
-        <Input
-          placeholder="Number of Entries"
-          value={entriesCount}
-          onChangeText={setEntriesCount}
-          keyboardType="numeric"
-          leftIcon={
-            <Icon name="group" size={FONTSIZE.size_24} color={COLORS.Primary} />
-          }
-          errorMessage={entriesCountError}
-          maxLength={2}
-        />
-      </Card>
+          </TouchableOpacity>
+        </Card>
 
-      <View style={styles.iconContainer}>
-        <Icon
-          name="calendar"
-          type="antdesign"
-          color={COLORS.Primary}
-          size={FONTSIZE.size_32}
-          onPress={() => setShowDate(true)}
-          containerStyle={styles.icon}
-        />
-        <Icon
-          name="clockcircle"
-          type="antdesign"
-          color={COLORS.Primary}
-          size={FONTSIZE.size_32}
-          onPress={() => setShowStartTime(true)}
-          containerStyle={styles.icon}
-        />
-        <Icon
-          name="addusergroup"
-          type="antdesign"
-          color={COLORS.Primary}
-          size={FONTSIZE.size_32}
-          onPress={() => setIsModalVisible(true)}
-          containerStyle={styles.icon}
-        />
-      </View>
+        {showDate && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            is24Hour={true}
+            display="default"
+            minimumDate={new Date()}
+            onChange={onChangeDate}
+          />
+        )}
 
-      {showDate && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          is24Hour={true}
-          display="default"
-          minimumDate={new Date()}
-          onChange={onChangeDate}
-        />
-      )}
+        {showStartTime && (
+          <DateTimePicker
+            value={startTime}
+            mode="time"
+            is24Hour={true}
+            display="default"
+            onChange={onChangeStartTime}
+          />
+        )}
 
-      {showStartTime && (
-        <DateTimePicker
-          value={startTime}
-          mode="time"
-          is24Hour={true}
-          display="default"
-          onChange={onChangeStartTime}
-        />
-      )}
+        {showEndTime && (
+          <DateTimePicker
+            value={endTime}
+            mode="time"
+            is24Hour={true}
+            display="default"
+            onChange={onChangeEndTime}
+          />
+        )}
 
-      {showEndTime && (
-        <DateTimePicker
-          value={endTime}
-          mode="time"
-          is24Hour={true}
-          display="default"
-          onChange={onChangeEndTime}
-        />
-      )}
+        <View style={styles.buttonContainer}>
+          <Button
+            title="Create"
+            onPress={handleCreateEvent}
+            buttonStyle={styles.createButton}
+          />
+          <Button
+            title="Clear"
+            onPress={resetFields}
+            buttonStyle={styles.cancelButton}
+          />
+        </View>
 
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Create"
-          onPress={handleCreateEvent}
-          buttonStyle={styles.createButton}
+        <UserSearchModal
+          isVisible={isModalVisible}
+          onClose={() => setIsModalVisible(false)}
+          selectedUsers={visitors}
+          setSelectedUsers={setVisitors}
+          currentUserEmail={user.primaryEmailAddress.emailAddress}
         />
-        <Button
-          title="Clear"
-          onPress={resetFields}
-          buttonStyle={styles.cancelButton}
-        />
-      </View>
-
-      <UserSearchModal
-        isVisible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-        selectedUsers={visitors}
-        setSelectedUsers={setVisitors}
-        currentUserEmail={user.primaryEmailAddress.emailAddress}
-      />
-    </ScrollView>
+      </ScrollView>
+    </>
   );
 };
 
@@ -383,7 +444,20 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingVertical: SPACING.space_20,
     paddingHorizontal: SPACING.space_10,
-    backgroundColor: COLORS.ContainerBackground,
+    backgroundColor: COLORS.LightGrey,
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  timeContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  timeInput: {
+    flex: 1,
+    marginHorizontal: SPACING.space_5,
   },
   title: {
     fontSize: FONTSIZE.size_24,
@@ -397,7 +471,9 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.space_10,
   },
   avatar: {
+    backgroundColor: COLORS.IconBackground,
     borderWidth: SPACING.space_2,
+    borderRadius: BORDERRADIUS.radius_10,
     borderColor: COLORS.Primary,
   },
   card: {
@@ -413,17 +489,18 @@ const styles = StyleSheet.create({
     padding: SPACING.space_20,
   },
   buttonContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-around",
-    marginTop: SPACING.space_20,
+    // marginTop: SPACING.space_20,
   },
   createButton: {
     backgroundColor: COLORS.Primary,
-    paddingHorizontal: SPACING.space_20,
+    marginHorizontal: SPACING.space_20,
+    marginVertical: SPACING.space_20,
   },
   cancelButton: {
     backgroundColor: COLORS.Red2,
-    paddingHorizontal: SPACING.space_20,
+    marginHorizontal: SPACING.space_20,
   },
 });
 

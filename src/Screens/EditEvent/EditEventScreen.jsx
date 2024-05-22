@@ -197,16 +197,6 @@ const EditEventScreen = ({ route, navigation }) => {
           }
           maxLength={100}
         />
-        <Input
-          placeholder="Number Of Entries"
-          keyboardType="numeric"
-          onChangeText={setEntriesCount}
-          value={entriesCount}
-          leftIcon={
-            <Icon name="group" size={FONTSIZE.size_24} color={COLORS.Primary} />
-          }
-          maxLength={2}
-        />
       </Card>
       <View style={styles.iconContainer}>
         <Icon

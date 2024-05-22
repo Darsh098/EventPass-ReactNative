@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { Button, Input, Avatar, Card, Icon } from "react-native-elements";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from "react-native";
+import { Button, Input, Card, Icon } from "react-native-elements";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useMutation } from "@apollo/client";
 import {
@@ -17,6 +24,7 @@ import {
   RouteNames,
   SPACING,
 } from "../../Common/constants";
+import Loader from "../../Components/Loader";
 
 const EditEventScreen = ({ route, navigation }) => {
   const { user } = useUser();
@@ -35,12 +43,16 @@ const EditEventScreen = ({ route, navigation }) => {
   const [date, setDate] = useState(new Date());
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
-
+  const [nameError, setNameError] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
+  const [venueError, setVenueError] = useState("");
+  const [entriesCountError, setEntriesCountError] = useState("");
   const [updateEvent, { error }] = useMutation(UPDATE_EVENT);
   const [deleteEventVisitor] = useMutation(DELETE_EVENT_VISITOR);
   const [createEventVisitor] = useMutation(CREATE_EVENT_VISITOR);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [visitors, setVisitors] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const extractVisitorEmails = () => {
@@ -80,7 +92,57 @@ const EditEventScreen = ({ route, navigation }) => {
     return durationInMinutes;
   };
 
+  const validateFields = () => {
+    let valid = true;
+    if (name.length === 0) {
+      setNameError("Event name is required");
+      valid = false;
+    } else if (name.length > 30) {
+      setNameError("Event name cannot exceed 30 characters");
+      valid = false;
+    } else {
+      setNameError("");
+    }
+
+    if (description.length === 0) {
+      setDescriptionError("Description is required");
+      valid = false;
+    } else if (description.length > 150) {
+      setDescriptionError("Description cannot exceed 150 characters");
+      valid = false;
+    } else {
+      setDescriptionError("");
+    }
+
+    if (venue.length === 0) {
+      setVenueError("Venue is required");
+      valid = false;
+    } else if (venue.length > 100) {
+      setVenueError("Venue cannot exceed 100 characters");
+      valid = false;
+    } else {
+      setVenueError("");
+    }
+
+    const timeDuration = calculateDurationInMinutes(startTime, endTime);
+    if (timeDuration <= 0) {
+      Alert.alert(
+        "Validation Error",
+        "Please choose an end time later than the start time."
+      );
+      valid = false;
+    }
+
+    return valid;
+  };
+
   const handleSaveChanges = async () => {
+    if (!validateFields()) {
+      return;
+    }
+
+    setLoading(true);
+
     try {
       const existingVisitorEmails = eventDetails.eventVisitors.map(
         (vis) => vis.visitor.email
@@ -135,6 +197,8 @@ const EditEventScreen = ({ route, navigation }) => {
       navigation.navigate(RouteNames.PROFILE_SCREEN);
     } catch (err) {
       console.error("Error updating event:", error.networkError.result);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -148,7 +212,6 @@ const EditEventScreen = ({ route, navigation }) => {
     const currentTime = selectedTime || new Date();
     setShowStartTime(false);
     setStartTime(currentTime);
-    setShowEndTime(true);
   };
 
   const onChangeEndTime = (event, selectedTime) => {
@@ -158,124 +221,188 @@ const EditEventScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Edit Event</Text>
-      <Card containerStyle={styles.card}>
-        <Input
-          placeholder="Name"
-          value={name}
-          onChangeText={setName}
-          leftIcon={
-            <Icon name="event" size={FONTSIZE.size_24} color={COLORS.Primary} />
-          }
-          maxLength={30}
-        />
-        <Input
-          placeholder="Description"
-          value={description}
-          onChangeText={setDescription}
-          leftIcon={
-            <Icon
-              name="description"
-              size={FONTSIZE.size_24}
-              color={COLORS.Primary}
+    <>
+      {loading && <Loader />}
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Edit Event</Text>
+        <Card containerStyle={styles.card}>
+          <Input
+            placeholder="Name"
+            value={name}
+            onChangeText={setName}
+            leftIcon={
+              <Icon
+                name="event"
+                size={FONTSIZE.size_24}
+                color={COLORS.Primary}
+              />
+            }
+            maxLength={30}
+            errorMessage={nameError}
+          />
+          <Input
+            placeholder="Description"
+            value={description}
+            onChangeText={setDescription}
+            leftIcon={
+              <Icon
+                name="description"
+                size={FONTSIZE.size_24}
+                color={COLORS.Primary}
+              />
+            }
+            multiline
+            maxLength={150}
+            errorMessage={descriptionError}
+          />
+          <Input
+            placeholder="Venue"
+            value={venue}
+            onChangeText={setVenue}
+            leftIcon={
+              <Icon
+                name="location-on"
+                size={FONTSIZE.size_24}
+                color={COLORS.Primary}
+              />
+            }
+            maxLength={100}
+            errorMessage={venueError}
+          />
+
+          <TouchableOpacity onPress={() => setShowDate(true)}>
+            <Input
+              placeholder="Event Date"
+              value={date.toLocaleDateString()}
+              editable={false}
+              leftIcon={
+                <Icon
+                  name="calendar-month"
+                  type="material-community"
+                  size={FONTSIZE.size_24}
+                  color={COLORS.Primary}
+                />
+              }
             />
-          }
-          multiline
-          maxLength={150}
-        />
-        <Input
-          placeholder="Venue"
-          value={venue}
-          onChangeText={setVenue}
-          leftIcon={
-            <Icon
-              name="location-on"
-              size={FONTSIZE.size_24}
-              color={COLORS.Primary}
+          </TouchableOpacity>
+          <View style={styles.timeContainer}>
+            <TouchableOpacity
+              onPress={() => setShowStartTime(true)}
+              style={styles.timeInput}
+            >
+              <Input
+                placeholder="Start Time"
+                value={startTime.toLocaleTimeString()}
+                editable={false}
+                leftIcon={
+                  <Icon
+                    name="timer"
+                    type="material-community"
+                    size={FONTSIZE.size_24}
+                    color={COLORS.Primary}
+                  />
+                }
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setShowEndTime(true)}
+              style={styles.timeInput}
+            >
+              <Input
+                placeholder="End Time"
+                value={endTime.toLocaleTimeString()}
+                editable={false}
+                leftIcon={
+                  <Icon
+                    name="timer-off"
+                    type="material-community"
+                    size={FONTSIZE.size_24}
+                    color={COLORS.Primary}
+                  />
+                }
+              />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+            <Input
+              placeholder="Add Visitors"
+              value={`${visitors.length} invited`}
+              editable={false}
+              leftIcon={
+                <Icon
+                  name="account-multiple-plus"
+                  type="material-community"
+                  color={COLORS.Primary}
+                  size={FONTSIZE.size_24}
+                />
+              }
+              inputStyle={styles.visitorInput}
             />
-          }
-          maxLength={100}
+          </TouchableOpacity>
+        </Card>
+
+        {showDate && (
+          <DateTimePicker
+            value={date}
+            mode={"date"}
+            is24Hour={true}
+            display="default"
+            onChange={onChangeDate}
+            style={styles.datePicker}
+          />
+        )}
+        {showStartTime && (
+          <DateTimePicker
+            value={startTime}
+            mode={"time"}
+            is24Hour={true}
+            display="default"
+            onChange={onChangeStartTime}
+            style={styles.timePicker}
+          />
+        )}
+        {showEndTime && (
+          <DateTimePicker
+            value={endTime}
+            mode={"time"}
+            is24Hour={true}
+            display="default"
+            onChange={onChangeEndTime}
+            style={styles.timePicker}
+          />
+        )}
+        <Button
+          title="Save Changes"
+          buttonStyle={styles.editButton}
+          onPress={handleSaveChanges}
         />
-      </Card>
-      <View style={styles.iconContainer}>
-        <Icon
-          name="calendar"
-          type="antdesign"
-          color={COLORS.Primary}
-          size={FONTSIZE.size_32}
-          onPress={() => setShowDate(true)}
-          containerStyle={styles.icon}
+
+        <UserSearchModal
+          isVisible={isModalVisible}
+          onClose={() => setIsModalVisible(false)}
+          selectedUsers={visitors}
+          setSelectedUsers={setVisitors}
+          currentUserEmail={user.primaryEmailAddress.emailAddress}
         />
-        <Icon
-          name="clockcircle"
-          type="antdesign"
-          color={COLORS.Primary}
-          size={FONTSIZE.size_32}
-          onPress={() => setShowStartTime(true)}
-          containerStyle={styles.icon}
-        />
-        <Icon
-          name="addusergroup"
-          type="antdesign"
-          color={COLORS.Primary}
-          size={FONTSIZE.size_32}
-          onPress={() => setIsModalVisible(true)}
-          containerStyle={styles.icon}
-        />
-      </View>
-      {showDate && (
-        <DateTimePicker
-          value={date}
-          mode={"date"}
-          is24Hour={true}
-          display="default"
-          onChange={onChangeDate}
-          style={styles.datePicker}
-        />
-      )}
-      {showStartTime && (
-        <DateTimePicker
-          value={startTime}
-          mode={"time"}
-          is24Hour={true}
-          display="default"
-          onChange={onChangeStartTime}
-          style={styles.timePicker}
-        />
-      )}
-      {showEndTime && (
-        <DateTimePicker
-          value={endTime}
-          mode={"time"}
-          is24Hour={true}
-          display="default"
-          onChange={onChangeEndTime}
-          style={styles.timePicker}
-        />
-      )}
-      <Button
-        title="Save Changes"
-        buttonStyle={styles.editButton}
-        onPress={handleSaveChanges}
-      />
-      <UserSearchModal
-        isVisible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-        selectedUsers={visitors}
-        setSelectedUsers={setVisitors}
-        currentUserEmail={user.primaryEmailAddress.emailAddress}
-      />
-    </View>
+      </ScrollView>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingVertical: SPACING.space_20,
     paddingHorizontal: SPACING.space_10,
     backgroundColor: COLORS.LightGrey,
+  },
+  timeContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  timeInput: {
+    flex: 1,
+    marginHorizontal: SPACING.space_5,
   },
   title: {
     fontSize: FONTSIZE.size_24,
@@ -318,6 +445,7 @@ const styles = StyleSheet.create({
   editButton: {
     backgroundColor: COLORS.Primary,
     marginHorizontal: SPACING.space_20,
+    marginVertical: SPACING.space_20,
   },
 });
 
